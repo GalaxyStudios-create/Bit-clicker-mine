@@ -1,622 +1,377 @@
-// Глобальные переменные
-let serverRunning = false;
-let ramUsage = 0;
-let cpuUsage = 0;
-let playersOnline = 0;
-let uptimeSeconds = 0;
-let uptimeInterval = null;
-let activityInterval = null;
-let serverName = 'MyServer';
+// ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+let isRunning = false;
+let ram = 0;
+let cpu = 0;
+let players = 0;
+let uptime = 0;
+let uptimeTimer = null;
+let activityTimer = null;
+let serverName = 'myserver';
 
-// Обновление названия сервера и IP
-function updateServerName() {
-    const nameInput = document.getElementById('server-name');
-    serverName = nameInput.value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-    
-    if (!serverName) {
-        serverName = 'myserver';
-        nameInput.value = 'MyServer';
-    }
-    
-    const serverIP = `play.${serverName}.galaxy`;
-    document.getElementById('server-ip').textContent = serverIP;
-    
-    addConsoleLog(`[GalaxyHosting] IP обновлён: ${serverIP}`);
+// МОДАЛЬНЫЕ ОКНА
+function openLogin() {
+    document.getElementById('loginModal').classList.add('active');
 }
 
-// Модальные окна
-function showLogin() {
-    document.getElementById('loginModal').style.display = 'block';
+function closeLogin() {
+    document.getElementById('loginModal').classList.remove('active');
 }
 
-function showRegister() {
-    document.getElementById('registerModal').style.display = 'block';
+function openRegister() {
+    document.getElementById('registerModal').classList.add('active');
 }
 
-function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
+function closeRegister() {
+    document.getElementById('registerModal').classList.remove('active');
 }
 
-// Закрытие модального окна по клику вне его
-window.onclick = function(event) {
-    if (event.target.classList.contains('modal')) {
-        event.target.style.display = 'none';
-    }
-}
-
-// Вход в систему
-function login(event) {
-    event.preventDefault();
-    closeModal('loginModal');
+// ВХОД
+function doLogin() {
+    closeLogin();
     showDashboard();
-    addConsoleLog('[GalaxyHosting] ✅ Успешный вход в систему');
+    log('[GalaxyHosting] ✅ Успешный вход');
 }
 
-// Регистрация
-function register(event) {
-    event.preventDefault();
-    closeModal('registerModal');
+// РЕГИСТРАЦИЯ
+function doRegister() {
+    closeRegister();
     showDashboard();
-    addConsoleLog('[GalaxyHosting] ✅ Аккаунт создан! Добро пожаловать!');
-    updateServerName();
+    log('[GalaxyHosting] ✅ Аккаунт создан!');
+    updateIP();
 }
 
-// Показать панель управления
+// ПОКАЗАТЬ ПАНЕЛЬ
 function showDashboard() {
     document.getElementById('home').style.display = 'none';
     document.getElementById('features').style.display = 'none';
     document.querySelector('.navbar').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'flex';
+    document.getElementById('dashboard').classList.add('active');
 }
 
-// Выход
-function logout() {
-    if (serverRunning) {
-        if (!confirm('⚠️ Сервер запущен! Вы уверены что хотите выйти?')) {
-            return;
-        }
+// ВЫХОД
+function doLogout() {
+    if (isRunning) {
+        if (!confirm('⚠️ Сервер запущен! Выйти?')) return;
         stopServer();
     }
-    
-    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('dashboard').classList.remove('active');
     document.querySelector('.navbar').style.display = 'block';
-    document.getElementById('home').style.display = 'block';
+    document.getElementById('home').style.display = 'flex';
     document.getElementById('features').style.display = 'block';
-    window.scrollTo(0, 0);
 }
 
-// Переключение вкладок
-function showTab(tabName) {
+// ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
+function switchTab(tab) {
     const tabs = document.querySelectorAll('.tab-content');
-    tabs.forEach(tab => tab.classList.remove('active'));
-    document.getElementById('tab-' + tabName).classList.add('active');
+    tabs.forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
 }
 
-// Запуск сервера
+// ЗАПУСК СЕРВЕРА
 function startServer() {
-    if (serverRunning) {
+    if (isRunning) {
         alert('⚠️ Сервер уже запущен!');
         return;
     }
-    
-    serverRunning = true;
-    uptimeSeconds = 0;
-    updateServerStatus();
-    
-    const version = document.getElementById('mc-version').value;
-    const serverType = document.getElementById('server-type').value;
-    const serverIP = document.getElementById('server-ip').textContent;
-    
-    addConsoleLog('[GalaxyHosting] ========================================');
-    addConsoleLog('[GalaxyHosting] 🚀 Запуск сервера...');
-    addConsoleLog(`[GalaxyHosting] IP: ${serverIP}`);
-    addConsoleLog(`[GalaxyHosting] Версия: ${version}`);
-    addConsoleLog(`[GalaxyHosting] Тип: ${serverType}`);
-    
+
+    isRunning = true;
+    uptime = 0;
+    updateStatus();
+
+    const version = document.getElementById('mcVersion').value;
+    const type = document.getElementById('serverType').value;
+    const ip = document.getElementById('serverIP').textContent;
+
+    log('[GalaxyHosting] ========================================');
+    log('[GalaxyHosting] 🚀 Запуск сервера...');
+    log('[GalaxyHosting] IP: ' + ip);
+    log('[GalaxyHosting] Версия: ' + version);
+    log('[GalaxyHosting] Тип: ' + type);
+
     setTimeout(() => {
-        addConsoleLog(`[${serverType}] Starting minecraft server version ${version}`);
-        setTimeout(() => {
-            addConsoleLog('[Minecraft] Loading libraries, please wait...');
-            setTimeout(() => {
-                addConsoleLog('[Minecraft] Preparing level "world"');
-                setTimeout(() => {
-                    addConsoleLog('[Minecraft] Preparing spawn area: 0%');
-                    setTimeout(() => {
-                        addConsoleLog('[Minecraft] Preparing spawn area: 47%');
-                        setTimeout(() => {
-                            addConsoleLog('[Minecraft] Preparing spawn area: 83%');
-                            setTimeout(() => {
-                                addConsoleLog('[Minecraft] Done! Server started successfully');
-                                addConsoleLog('[Minecraft] Server is running on *:25565');
-                                addConsoleLog(`[GalaxyHosting] ✅ Сервер успешно запущен!`);
-                                addConsoleLog(`[GalaxyHosting] 📌 Подключайтесь: ${serverIP}`);
-                                startUptimeCounter();
-                                simulateServerActivity();
-                            }, 800);
-                        }, 600);
-                    }, 500);
-                }, 1000);
-            }, 1000);
-        }, 1500);
+        log('[' + type + '] Starting minecraft server version ' + version);
     }, 1000);
+
+    setTimeout(() => {
+        log('[Minecraft] Loading libraries...');
+    }, 2000);
+
+    setTimeout(() => {
+        log('[Minecraft] Preparing level "world"');
+    }, 3000);
+
+    setTimeout(() => {
+        log('[Minecraft] Preparing spawn area: 0%');
+    }, 4000);
+
+    setTimeout(() => {
+        log('[Minecraft] Preparing spawn area: 47%');
+    }, 4500);
+
+    setTimeout(() => {
+        log('[Minecraft] Preparing spawn area: 83%');
+    }, 5000);
+
+    setTimeout(() => {
+        log('[Minecraft] Done! Server started successfully');
+        log('[Minecraft] Server is running on *:25565');
+        log('[GalaxyHosting] ✅ Сервер запущен!');
+        log('[GalaxyHosting] 📌 Подключайтесь: ' + ip);
+        startUptime();
+        startActivity();
+    }, 5500);
 }
 
-// Остановка сервера
+// ОСТАНОВКА СЕРВЕРА
 function stopServer() {
-    if (!serverRunning) {
+    if (!isRunning) {
         alert('⚠️ Сервер уже остановлен!');
         return;
     }
-    
-    addConsoleLog('[GalaxyHosting] 🛑 Остановка сервера...');
-    addConsoleLog('[Minecraft] Stopping server');
-    addConsoleLog('[Minecraft] Saving worlds...');
-    
+
+    log('[GalaxyHosting] 🛑 Остановка сервера...');
+    log('[Minecraft] Stopping server');
+    log('[Minecraft] Saving worlds...');
+
     setTimeout(() => {
-        addConsoleLog('[Minecraft] Saved the game');
-        addConsoleLog('[GalaxyHosting] ✅ Сервер остановлен');
-        serverRunning = false;
-        playersOnline = 0;
-        ramUsage = 0;
-        cpuUsage = 0;
-        uptimeSeconds = 0;
-        stopUptimeCounter();
-        stopServerActivity();
-        updateServerStatus();
-        updatePlayersList([]);
+        log('[Minecraft] Saved the game');
+        log('[GalaxyHosting] ✅ Сервер остановлен');
+        isRunning = false;
+        ram = 0;
+        cpu = 0;
+        players = 0;
+        uptime = 0;
+        clearInterval(uptimeTimer);
+        clearInterval(activityTimer);
+        updateStatus();
+        updatePlayers([]);
     }, 1500);
 }
 
-// Перезапуск сервера
+// ПЕРЕЗАПУСК
 function restartServer() {
-    if (!serverRunning) {
+    if (!isRunning) {
         startServer();
         return;
     }
-    
-    addConsoleLog('[GalaxyHosting] 🔄 Перезапуск сервера...');
-    serverRunning = false;
-    stopUptimeCounter();
-    stopServerActivity();
-    
+
+    log('[GalaxyHosting] 🔄 Перезапуск...');
+    isRunning = false;
+    clearInterval(uptimeTimer);
+    clearInterval(activityTimer);
+
     setTimeout(() => {
         startServer();
     }, 2000);
 }
 
-// Обновление статуса сервера
-function updateServerStatus() {
-    const statusIndicator = document.querySelector('.status-indicator');
-    const statusText = document.getElementById('server-status-text');
-    const ramDisplay = document.getElementById('ram-usage');
-    const ramProgress = document.getElementById('ram-progress');
-    const playersDisplay = document.getElementById('players-online');
-    const playersCount = document.getElementById('players-count');
-    const cpuDisplay = document.getElementById('cpu-usage');
-    
-    if (serverRunning) {
-        statusIndicator.classList.remove('offline');
-        statusIndicator.classList.add('online');
-        statusText.textContent = '🟢 Онлайн';
+// ОБНОВЛЕНИЕ СТАТУСА
+function updateStatus() {
+    const dot = document.getElementById('statusDot');
+    const text = document.getElementById('statusText');
+
+    if (isRunning) {
+        dot.classList.add('online');
+        text.textContent = '🟢 Онлайн';
     } else {
-        statusIndicator.classList.remove('online');
-        statusIndicator.classList.add('offline');
-        statusText.textContent = '🔴 Оффлайн';
+        dot.classList.remove('online');
+        text.textContent = '🔴 Оффлайн';
     }
-    
-    ramDisplay.textContent = `${Math.round(ramUsage)} MB / 6144 MB`;
-    ramProgress.style.width = (ramUsage / 6144 * 100) + '%';
-    playersDisplay.textContent = `${playersOnline}/100`;
-    if (playersCount) playersCount.textContent = playersOnline;
-    cpuDisplay.textContent = `${cpuUsage}%`;
+
+    document.getElementById('ramDisplay').textContent = Math.round(ram) + ' MB / 6144 MB';
+    document.getElementById('ramProgress').style.width = (ram / 6144 * 100) + '%';
+    document.getElementById('playersDisplay').textContent = players + '/100';
+    document.getElementById('playerCount').textContent = players;
+    document.getElementById('cpuDisplay').textContent = cpu + '%';
 }
 
-// Счётчик uptime
-function startUptimeCounter() {
-    uptimeInterval = setInterval(() => {
-        uptimeSeconds++;
-        const hours = Math.floor(uptimeSeconds / 3600);
-        const minutes = Math.floor((uptimeSeconds % 3600) / 60);
-        const seconds = uptimeSeconds % 60;
-        const uptimeDisplay = document.getElementById('uptime');
-        uptimeDisplay.textContent = 
-            `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+// UPTIME
+function startUptime() {
+    uptimeTimer = setInterval(() => {
+        uptime++;
+        const h = Math.floor(uptime / 3600);
+        const m = Math.floor((uptime % 3600) / 60);
+        const s = uptime % 60;
+        document.getElementById('uptimeDisplay').textContent = 
+            pad(h) + ':' + pad(m) + ':' + pad(s);
     }, 1000);
 }
 
-function stopUptimeCounter() {
-    if (uptimeInterval) {
-        clearInterval(uptimeInterval);
-        uptimeInterval = null;
-        document.getElementById('uptime').textContent = '00:00:00';
-    }
+function pad(n) {
+    return n < 10 ? '0' + n : n;
 }
 
-// Симуляция активности сервера
-function simulateServerActivity() {
-    // Начальное значение RAM
-    ramUsage = 1200 + Math.random() * 300;
-    
-    activityInterval = setInterval(() => {
-        if (!serverRunning) return;
-        
-        // Симуляция RAM
-        ramUsage += Math.random() * 150 - 50;
-        ramUsage = Math.max(1200, Math.min(5500, ramUsage));
-        
-        // Симуляция CPU
-        cpuUsage = Math.floor(Math.random() * 40) + 20;
-        
-        // Симуляция игроков
+// АКТИВНОСТЬ
+function startActivity() {
+    ram = 1200 + Math.random() * 300;
+
+    activityTimer = setInterval(() => {
+        if (!isRunning) return;
+
+        ram += Math.random() * 150 - 50;
+        ram = Math.max(1200, Math.min(5500, ram));
+
+        cpu = Math.floor(Math.random() * 40) + 20;
+
         if (Math.random() > 0.85) {
             const change = Math.floor(Math.random() * 3) - 1;
-            const oldPlayers = playersOnline;
-            playersOnline = Math.max(0, Math.min(100, playersOnline + change));
-            
-            if (playersOnline > oldPlayers) {
-                const playerName = generatePlayerName();
-                addConsoleLog(`[Minecraft] ${playerName} joined the game`);
-                updatePlayersList('join', playerName);
-            } else if (playersOnline < oldPlayers) {
-                const playerName = generatePlayerName();
-                addConsoleLog(`[Minecraft] ${playerName} left the game`);
-                updatePlayersList('leave', playerName);
+            const old = players;
+            players = Math.max(0, Math.min(100, players + change));
+
+            if (players > old) {
+                const name = 'Player' + Math.floor(Math.random() * 999);
+                log('[Minecraft] ' + name + ' joined the game');
+            } else if (players < old) {
+                const name = 'Player' + Math.floor(Math.random() * 999);
+                log('[Minecraft] ' + name + ' left the game');
             }
         }
-        
-        updateServerStatus();
+
+        updateStatus();
     }, 3000);
 }
 
-function stopServerActivity() {
-    if (activityInterval) {
-        clearInterval(activityInterval);
-        activityInterval = null;
-    }
-}
-
-// Генерация имени игрока
-function generatePlayerName() {
-    const names = ['Steve', 'Alex', 'Notch', 'Herobrine', 'Creeper', 'Enderman', 'Zombie', 'Skeleton'];
-    return names[Math.floor(Math.random() * names.length)] + Math.floor(Math.random() * 999);
-}
-
-// Обновление списка игроков
-let currentPlayers = [];
-
-function updatePlayersList(action, playerName) {
-    const playerList = document.getElementById('online-players');
-    
-    if (action === 'join' && playerName) {
-        currentPlayers.push(playerName);
-    } else if (action === 'leave' && currentPlayers.length > 0) {
-        currentPlayers.pop();
-    } else if (Array.isArray(action)) {
-        currentPlayers = action;
-    }
-    
-    if (currentPlayers.length === 0) {
-        playerList.innerHTML = '<p class="empty-state">Нет игроков онлайн</p>';
-    } else {
-        playerList.innerHTML = currentPlayers.map(name => 
-            `<div style="padding: 0.5rem; background: rgba(108, 99, 255, 0.1); margin: 0.3rem 0; border-radius: 5px;">👤 ${name}</div>`
-        ).join('');
-    }
-}
-
-// Консоль
-function addConsoleLog(message) {
-    const consoleOutput = document.getElementById('console-output');
+// ЛОГИ
+function log(msg) {
+    const output = document.getElementById('consoleOutput');
     const line = document.createElement('div');
     line.className = 'console-line';
     const time = new Date().toLocaleTimeString();
-    line.textContent = `[${time}] ${message}`;
-    consoleOutput.appendChild(line);
-    consoleOutput.scrollTop = consoleOutput.scrollHeight;
+    line.textContent = '[' + time + '] ' + msg;
+    output.appendChild(line);
+    output.scrollTop = output.scrollHeight;
 }
 
-function handleCommand(event) {
-    if (event.key === 'Enter') {
-        sendCommand();
-    }
-}
-
+// КОМАНДЫ
 function sendCommand() {
-    const input = document.getElementById('console-command');
-    const command = input.value.trim();
-    
-    if (!command) return;
-    
-    if (!serverRunning) {
-        addConsoleLog('[GalaxyHosting] ⚠️ Сервер не запущен!');
+    const input = document.getElementById('consoleInput');
+    const cmd = input.value.trim();
+
+    if (!cmd) return;
+
+    if (!isRunning) {
+        log('[GalaxyHosting] ⚠️ Сервер не запущен!');
         input.value = '';
         return;
     }
-    
-    addConsoleLog(`> ${command}`);
-    
+
+    log('> ' + cmd);
+
     setTimeout(() => {
-        if (command === 'stop') {
+        if (cmd === 'stop') {
             stopServer();
-        } else if (command === 'list') {
-            addConsoleLog(`[Minecraft] There are ${playersOnline} of max 100 players online`);
-            if (currentPlayers.length > 0) {
-                addConsoleLog(`[Minecraft] Players: ${currentPlayers.join(', ')}`);
-            }
-        } else if (command.startsWith('say ')) {
-            addConsoleLog(`[Server] ${command.substring(4)}`);
-        } else if (command === 'help') {
-            addConsoleLog('[Minecraft] Available commands:');
-            addConsoleLog('  stop, list, say, whitelist, ban, kick, op, gamemode, save-all');
-        } else if (command.startsWith('op ')) {
-            const player = command.substring(3);
-            addConsoleLog(`[Minecraft] Made ${player} a server operator`);
-        } else if (command.startsWith('kick ')) {
-            const player = command.substring(5);
-            addConsoleLog(`[Minecraft] Kicked ${player}`);
-            playersOnline = Math.max(0, playersOnline - 1);
-            if (currentPlayers.includes(player)) {
-                currentPlayers = currentPlayers.filter(p => p !== player);
-            } else if (currentPlayers.length > 0) {
-                currentPlayers.pop();
-            }
-            updatePlayersList(currentPlayers);
-            updateServerStatus();
-        } else if (command === 'save-all') {
-            addConsoleLog('[Minecraft] Saving the game (this may take a moment!)');
-            setTimeout(() => {
-                addConsoleLog('[Minecraft] Saved the game');
-            }, 500);
-        } else if (command.startsWith('gamemode ')) {
-            addConsoleLog('[Minecraft] Set own game mode to ' + command.substring(9));
+        } else if (cmd === 'list') {
+            log('[Minecraft] There are ' + players + ' of max 100 players online');
+        } else if (cmd.startsWith('say ')) {
+            log('[Server] ' + cmd.substring(4));
+        } else if (cmd === 'help') {
+            log('[Minecraft] Commands: stop, list, say, op, kick, save-all');
+        } else if (cmd.startsWith('op ')) {
+            log('[Minecraft] Made ' + cmd.substring(3) + ' a server operator');
+        } else if (cmd === 'save-all') {
+            log('[Minecraft] Saving...');
+            setTimeout(() => log('[Minecraft] Saved the game'), 500);
         } else {
-            addConsoleLog('[Minecraft] Command executed successfully');
+            log('[Minecraft] Command executed');
         }
     }, 200);
-    
+
     input.value = '';
 }
 
-// Копирование IP
+// ENTER для команд
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('consoleInput');
+    if (input) {
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendCommand();
+        });
+    }
+});
+
+// КОПИРОВАТЬ IP
 function copyIP() {
-    const ip = document.getElementById('server-ip').textContent;
+    const ip = document.getElementById('serverIP').textContent;
     
-    if (navigator.clipboard && navigator.clipboard.writeText) {
+    if (navigator.clipboard) {
         navigator.clipboard.writeText(ip).then(() => {
-            alert('✅ IP адрес скопирован: ' + ip);
-        }).catch(() => {
-            fallbackCopyIP(ip);
+            alert('✅ IP скопирован: ' + ip);
         });
     } else {
-        fallbackCopyIP(ip);
-    }
-}
-
-function fallbackCopyIP(text) {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    document.body.appendChild(textarea);
-    textarea.select();
-    try {
+        const textarea = document.createElement('textarea');
+        textarea.value = ip;
+        document.body.appendChild(textarea);
+        textarea.select();
         document.execCommand('copy');
-        alert('✅ IP адрес скопирован: ' + text);
-    } catch (err) {
-        alert('IP адрес: ' + text);
-    }
-    document.body.removeChild(textarea);
-}
-
-// Файловый менеджер
-function createFile() {
-    const fileName = prompt('Введите имя файла (с расширением):');
-    if (fileName) {
-        alert('✅ Файл создан: ' + fileName);
-        addConsoleLog(`[GalaxyHosting] Файл ${fileName} создан`);
+        document.body.removeChild(textarea);
+        alert('✅ IP скопирован: ' + ip);
     }
 }
 
-function createFolder() {
-    const folderName = prompt('Введите имя папки:');
-    if (folderName) {
-        alert('✅ Папка создана: ' + folderName);
-        addConsoleLog(`[GalaxyHosting] Папка ${folderName} создана`);
-    }
+// ОБНОВИТЬ IP
+function updateIP() {
+    const name = document.getElementById('serverName').value.toLowerCase().replace(/[^a-z0-9]/g, '');
+    serverName = name || 'myserver';
+    const ip = 'play.' + serverName + '.galaxy';
+    document.getElementById('serverIP').textContent = ip;
+    log('[GalaxyHosting] IP обновлён: ' + ip);
 }
 
-function uploadFile() {
-    alert('📤 Перетащите файлы сюда или выберите с компьютера');
-    addConsoleLog('[GalaxyHosting] Открыт менеджер загрузки файлов');
-}
-
-function refreshFiles() {
-    addConsoleLog('[GalaxyHosting] Обновление списка файлов...');
-    setTimeout(() => {
-        addConsoleLog('[GalaxyHosting] ✅ Список файлов обновлён');
-        alert('🔄 Список файлов обновлён');
-    }, 500);
-}
-
-function openFolder(folderName) {
-    addConsoleLog(`[GalaxyHosting] Открытие папки: ${folderName}`);
-    alert(`📁 Открытие папки: ${folderName}`);
-}
-
-function editFile(fileName) {
-    addConsoleLog(`[GalaxyHosting] Редактирование: ${fileName}`);
-    alert(`📝 Открыт редактор файла: ${fileName}\n\nЗдесь вы можете редактировать содержимое файла.`);
-}
-
-// Плагины
-function installPlugin() {
-    const plugins = [
-        '🔌 EssentialsX',
-        '✏️ WorldEdit',
-        '👥 LuckPerms',
-        '💰 Vault',
-        '🤖 Citizens',
-        '🏠 GriefPrevention',
-        '🎨 WorldGuard',
-        '⚔️ McMMO',
-        '🛒 ChestShop'
-    ];
-    alert('🔌 Магазин плагинов:\n\n' + plugins.join('\n'));
-    addConsoleLog('[GalaxyHosting] Открыт магазин плагинов');
-}
-
-function uploadPlugin() {
-    alert('📤 Загрузите JAR файл плагина');
-    addConsoleLog('[GalaxyHosting] Открыт менеджер загрузки плагинов');
-}
-
-function refreshPlugins() {
-    addConsoleLog('[GalaxyHosting] Обновление списка плагинов...');
-    setTimeout(() => {
-        addConsoleLog('[GalaxyHosting] ✅ Список плагинов обновлён');
-        alert('🔄 Список плагинов обновлён');
-    }, 500);
-}
-
-// Игроки
-function showWhitelist() {
-    alert('📋 Управление белым списком\n\nКоманды:\n/whitelist add <игрок>\n/whitelist remove <игрок>\n/whitelist on\n/whitelist off');
-    addConsoleLog('[GalaxyHosting] Открыт whitelist');
-}
-
-function showBanlist() {
-    alert('🚫 Список забаненных игроков\n\nПусто\n\nКоманды:\n/ban <игрок>\n/unban <игрок>');
-    addConsoleLog('[GalaxyHosting] Открыт banlist');
-}
-
-function showOps() {
-    alert('👑 Список операторов\n\nПусто\n\nКоманды:\n/op <игрок>\n/deop <игрок>');
-    addConsoleLog('[GalaxyHosting] Открыт список операторов');
-}
-
-function kickAll() {
-    if (!serverRunning) {
-        alert('⚠️ Сервер не запущен!');
-        return;
-    }
-    if (playersOnline === 0) {
-        alert('⚠️ Нет игроков онлайн!');
-        return;
-    }
-    if (confirm(`⚠️ Кикнуть всех игроков (${playersOnline})?`)) {
-        addConsoleLog(`[Minecraft] Kicked ${playersOnline} players from the server`);
-        playersOnline = 0;
-        currentPlayers = [];
-        updatePlayersList([]);
-        updateServerStatus();
-        alert('✅ Все игроки кикнуты');
-    }
-}
-
-// Настройки
+// СОХРАНИТЬ НАСТРОЙКИ
 function saveSettings() {
-    const version = document.getElementById('mc-version').value;
-    const type = document.getElementById('server-type').value;
-    const maxPlayers = document.getElementById('max-players').value;
-    const serverNameInput = document.getElementById('server-name').value;
-    const motd = document.getElementById('motd').value;
-    const gamemode = document.getElementById('gamemode').value;
-    const difficulty = document.getElementById('difficulty').value;
+    updateIP();
     
-    addConsoleLog('[GalaxyHosting] 💾 Сохранение настроек...');
+    const version = document.getElementById('mcVersion').value;
+    const type = document.getElementById('serverType').value;
     
-    updateServerName();
+    log('[GalaxyHosting] 💾 Сохранение настроек...');
     
     setTimeout(() => {
-        addConsoleLog(`[GalaxyHosting] Версия: ${version}`);
-        addConsoleLog(`[GalaxyHosting] Тип: ${type}`);
-        addConsoleLog(`[GalaxyHosting] Макс. игроков: ${maxPlayers}`);
-        addConsoleLog(`[GalaxyHosting] Режим: ${gamemode}`);
-        addConsoleLog(`[GalaxyHosting] Сложность: ${difficulty}`);
-        addConsoleLog('[GalaxyHosting] ✅ Настройки сохранены!');
+        log('[GalaxyHosting] Версия: ' + version);
+        log('[GalaxyHosting] Тип: ' + type);
+        log('[GalaxyHosting] ✅ Настройки сохранены!');
         
-        document.getElementById('current-version').textContent = version;
+        document.getElementById('versionDisplay').textContent = version;
         
-        alert('✅ Настройки успешно сохранены!\n\n⚠️ Перезапустите сервер для применения изменений.');
+        alert('✅ Настройки сохранены!\n\n⚠️ Перезапустите сервер');
     }, 500);
 }
 
-// Бэкапы
-let backupList = [];
-
+// БЭКАП
 function createBackup() {
-    addConsoleLog('[GalaxyHosting] 💾 Создание бэкапа...');
+    log('[GalaxyHosting] 💾 Создание бэкапа...');
     
     let progress = 0;
     const interval = setInterval(() => {
         progress += 20;
-        addConsoleLog(`[GalaxyHosting] Прогресс: ${progress}%`);
+        log('[GalaxyHosting] Прогресс: ' + progress + '%');
         
         if (progress >= 100) {
             clearInterval(interval);
-            const date = new Date();
-            const backupName = `backup_${date.toLocaleDateString()}_${date.toLocaleTimeString().replace(/:/g, '-')}`;
-            const backupSize = Math.floor(Math.random() * 500 + 100);
-            
-            backupList.push({
-                name: backupName,
-                date: date.toLocaleString(),
-                size: backupSize
-            });
-            
-            addConsoleLog(`[GalaxyHosting] ✅ Бэкап создан: ${backupName}.zip`);
-            alert(`✅ Бэкап успешно создан!\n\nИмя: ${backupName}.zip\nДата: ${date.toLocaleString()}\nРазмер: ${backupSize} MB`);
-            
-            updateBackupList();
+            const date = new Date().toLocaleString();
+            const size = Math.floor(Math.random() * 500 + 100);
+            log('[GalaxyHosting] ✅ Бэкап создан!');
+            alert('✅ Бэкап создан!\n\nДата: ' + date + '\nРазмер: ' + size + ' MB');
         }
     }, 300);
 }
 
-function updateBackupList() {
-    const backupListElement = document.getElementById('backup-list');
+// СПИСОК ИГРОКОВ
+function updatePlayers(list) {
+    const playerList = document.getElementById('playerList');
     
-    if (backupList.length === 0) {
-        backupListElement.innerHTML = '<h3>Список бэкапов</h3><p class="empty-state">Бэкапы отсутствуют</p>';
+    if (list.length === 0) {
+        playerList.innerHTML = '<div class="empty-state">Нет игроков онлайн</div>';
     } else {
-        let html = '<h3>Список бэкапов</h3>';
-        backupList.forEach((backup, index) => {
-            html += `
-                <div style="background: rgba(108, 99, 255, 0.1); padding: 1rem; margin: 0.5rem 0; border-radius: 8px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <strong>💾 ${backup.name}.zip</strong><br>
-                            <small>📅 ${backup.date} | 💿 ${backup.size} MB</small>
-                        </div>
-                        <button onclick="downloadBackup(${index})" style="padding: 0.5rem 1rem; background: var(--primary); border: none; border-radius: 5px; color: white; cursor: pointer;">⬇️ Скачать</button>
-                    </div>
-                </div>
-            `;
-        });
-        backupListElement.innerHTML = html;
+        playerList.innerHTML = list.map(name => 
+            '<div style="padding: 10px; background: rgba(108, 99, 255, 0.1); margin: 5px 0; border-radius: 5px;">👤 ' + name + '</div>'
+        ).join('');
     }
 }
 
-function downloadBackup(index) {
-    const backup = backupList[index];
-    alert(`⬇️ Скачивание бэкапа: ${backup.name}.zip\n\nРазмер: ${backup.size} MB`);
-    addConsoleLog(`[GalaxyHosting] Скачивание бэкапа: ${backup.name}.zip`);
-}
-
-// Инициализация при загрузке
+// ИНИЦИАЛИЗАЦИЯ
 document.addEventListener('DOMContentLoaded', () => {
-    updateServerStatus();
-    updateServerName();
-    addConsoleLog('[GalaxyHosting] 🌌 Система загружена');
-    addConsoleLog('[GalaxyHosting] 📌 Готов к работе!');
-});
-
-// Плавная прокрутка
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-    });
+    updateStatus();
+    log('[GalaxyHosting] 🌌 Система загружена');
+    log('[GalaxyHosting] 📌 Готов к работе!');
 });
