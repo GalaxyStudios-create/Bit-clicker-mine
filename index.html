@@ -1,905 +1,609 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GalaxyHosting — Бесплатный Minecraft Хостинг</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Galaxy Hosting — Панель управления</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"/>
 </head>
 <body>
+<div class="app">
 
-    <!-- Частицы фон -->
-    <div class="particles" id="particles"></div>
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
-    <!-- Навигация -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                <i class="fas fa-galaxy"></i>
-                <span class="logo-icon">🌌</span>
-                <span class="logo-text">Galaxy<span class="accent">Hosting</span></span>
-            </div>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#home">Главная</a></li>
-                <li><a href="#features">Функции</a></li>
-                <li><a href="#plans">Тарифы</a></li>
-                <li><a href="#panel">Панель</a></li>
-                <li><a href="#faq">FAQ</a></li>
-            </ul>
-            <div class="nav-buttons">
-                <button class="btn btn-outline" onclick="openModal('loginModal')">Войти</button>
-                <button class="btn btn-primary" onclick="openModal('registerModal')">Начать бесплатно</button>
-            </div>
-            <div class="hamburger" id="hamburger" onclick="toggleMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </nav>
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">🌌 GALAXY<span>HOSTING</span></div>
+  <nav class="sidebar-nav">
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <div class="hero-badge">
-                <i class="fas fa-bolt"></i> Бесплатный хостинг Minecraft
-            </div>
-            <h1>Создай свой <span class="gradient-text">Minecraft сервер</span> за 30 секунд</h1>
-            <p class="hero-desc">Бесплатно до 6 ГБ оперативной памяти. Поддержка всех версий, модов, плагинов. Без скрытых платежей — навсегда.</p>
-            <div class="hero-buttons">
-                <button class="btn btn-glow btn-large" onclick="openModal('registerModal')">
-                    <i class="fas fa-rocket"></i> Создать сервер
-                </button>
-                <button class="btn btn-glass btn-large" onclick="scrollTo('#features')">
-                    <i class="fas fa-play"></i> Узнать больше
-                </button>
-            </div>
-            <div class="hero-stats">
-                <div class="stat">
-                    <span class="stat-number" data-target="15234">0</span>
-                    <span class="stat-label">Серверов создано</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number" data-target="48521">0</span>
-                    <span class="stat-label">Игроков онлайн</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number" data-target="99">0</span>
-                    <span class="stat-label">% Аптайм</span>
-                </div>
-            </div>
-        </div>
-        <div class="hero-visual">
-            <div class="server-card-3d">
-                <div class="mc-block">
-                    <div class="block-face front"></div>
-                    <div class="block-face back"></div>
-                    <div class="block-face left"></div>
-                    <div class="block-face right"></div>
-                    <div class="block-face top"></div>
-                    <div class="block-face bottom"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Версии -->
-    <section class="versions-bar">
-        <div class="container">
-            <p class="versions-title">Поддерживаемые платформы</p>
-            <div class="versions-scroll">
-                <div class="version-item"><img src="https://img.icons8.com/color/48/java-coffee-cup-logo.png" alt="Java"> Java Edition</div>
-                <div class="version-item"><img src="https://img.icons8.com/color/48/minecraft-logo.png" alt="Bedrock"> Bedrock</div>
-                <div class="version-item">🔧 Spigot</div>
-                <div class="version-item">📄 Paper</div>
-                <div class="version-item">🧹 Purpur</div>
-                <div class="version-item">🔨 Forge</div>
-                <div class="version-item">🧵 Fabric</div>
-                <div class="version-item">💧 Waterfall</div>
-                <div class="version-item">⚡ Velocity</div>
-                <div class="version-item">🌊 BungeeCord</div>
-                <div class="version-item">📦 Vanilla</div>
-                <div class="version-item">📸 Snapshot</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Функции -->
-    <section class="features" id="features">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-badge">Функции</span>
-                <h2>Всё, что нужно для <span class="gradient-text">идеального сервера</span></h2>
-                <p>Мощные инструменты для создания и управления вашим Minecraft сервером</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card" data-aos="fade-up">
-                    <div class="feature-icon"><i class="fas fa-memory"></i></div>
-                    <h3>До 6 ГБ RAM</h3>
-                    <p>Бесплатно получите до 6 ГБ оперативной памяти для стабильной работы сервера с модами и плагинами</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-delay="100">
-                    <div class="feature-icon"><i class="fas fa-plug"></i></div>
-                    <h3>Установка плагинов</h3>
-                    <p>Устанавливайте любые плагины в один клик из встроенного каталога или загружайте свои</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-delay="200">
-                    <div class="feature-icon"><i class="fas fa-cube"></i></div>
-                    <h3>Поддержка модов</h3>
-                    <p>Forge, Fabric, и другие загрузчики модов. Создавайте модпаки прямо из панели</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-delay="300">
-                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
-                    <h3>DDoS Защита</h3>
-                    <p>Мощная защита от DDoS атак. Ваш сервер всегда будет доступен для игроков</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-delay="400">
-                    <div class="feature-icon"><i class="fas fa-hdd"></i></div>
-                    <h3>SSD Хранилище</h3>
-                    <p>Быстрые NVMe SSD диски для моментальной загрузки миров и чанков</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-delay="500">
-                    <div class="feature-icon"><i class="fas fa-globe"></i></div>
-                    <h3>Бесплатный домен</h3>
-                    <p>Получите красивый поддомен вида yourserver.galaxyhost.net абсолютно бесплатно</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-delay="600">
-                    <div class="feature-icon"><i class="fas fa-database"></i></div>
-                    <h3>MySQL База данных</h3>
-                    <p>Бесплатная MySQL база данных для плагинов, требующих хранение данных</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-delay="700">
-                    <div class="feature-icon"><i class="fas fa-clock"></i></div>
-                    <h3>24/7 Работа</h3>
-                    <p>Сервер работает круглосуточно без необходимости держать вкладку открытой</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-delay="800">
-                    <div class="feature-icon"><i class="fas fa-terminal"></i></div>
-                    <h3>Веб-консоль</h3>
-                    <p>Полный доступ к консоли сервера через удобный веб-интерфейс в реальном времени</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-delay="900">
-                    <div class="feature-icon"><i class="fas fa-save"></i></div>
-                    <h3>Авто-бэкапы</h3>
-                    <p>Автоматическое создание резервных копий. Восстановите мир в любой момент</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-delay="1000">
-                    <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
-                    <h3>Файловый менеджер</h3>
-                    <p>Редактируйте конфиги, загружайте миры и плагины через удобный файловый менеджер</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-delay="1100">
-                    <div class="feature-icon"><i class="fas fa-users"></i></div>
-                    <h3>До 100 слотов</h3>
-                    <p>Поддержка до 100 игроков одновременно на бесплатном тарифе</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Тарифы -->
-    <section class="plans" id="plans">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-badge">Тарифы</span>
-                <h2>Выберите <span class="gradient-text">идеальный план</span></h2>
-                <p>Все тарифы включают полный набор функций. Разница только в ресурсах</p>
-            </div>
-            <div class="plans-grid">
-                <div class="plan-card">
-                    <div class="plan-header">
-                        <span class="plan-name">Starter</span>
-                        <div class="plan-price">
-                            <span class="price">Бесплатно</span>
-                            <span class="period">навсегда</span>
-                        </div>
-                    </div>
-                    <ul class="plan-features">
-                        <li><i class="fas fa-check"></i> 2 ГБ RAM</li>
-                        <li><i class="fas fa-check"></i> 10 ГБ SSD</li>
-                        <li><i class="fas fa-check"></i> 20 слотов</li>
-                        <li><i class="fas fa-check"></i> 1 сервер</li>
-                        <li><i class="fas fa-check"></i> Все ядра</li>
-                        <li><i class="fas fa-check"></i> Плагины & Моды</li>
-                        <li><i class="fas fa-check"></i> DDoS защита</li>
-                        <li><i class="fas fa-check"></i> Бесплатный домен</li>
-                        <li class="disabled"><i class="fas fa-times"></i> MySQL</li>
-                        <li class="disabled"><i class="fas fa-times"></i> Авто-бэкапы</li>
-                    </ul>
-                    <button class="btn btn-outline btn-full" onclick="openModal('registerModal')">Начать бесплатно</button>
-                </div>
-
-                <div class="plan-card popular">
-                    <div class="popular-badge">⭐ Популярный</div>
-                    <div class="plan-header">
-                        <span class="plan-name">Galaxy</span>
-                        <div class="plan-price">
-                            <span class="price">Бесплатно</span>
-                            <span class="period">навсегда</span>
-                        </div>
-                    </div>
-                    <ul class="plan-features">
-                        <li><i class="fas fa-check"></i> 4 ГБ RAM</li>
-                        <li><i class="fas fa-check"></i> 25 ГБ SSD</li>
-                        <li><i class="fas fa-check"></i> 50 слотов</li>
-                        <li><i class="fas fa-check"></i> 2 сервера</li>
-                        <li><i class="fas fa-check"></i> Все ядра</li>
-                        <li><i class="fas fa-check"></i> Плагины & Моды</li>
-                        <li><i class="fas fa-check"></i> DDoS защита</li>
-                        <li><i class="fas fa-check"></i> Бесплатный домен</li>
-                        <li><i class="fas fa-check"></i> MySQL база данных</li>
-                        <li><i class="fas fa-check"></i> Авто-бэкапы</li>
-                    </ul>
-                    <button class="btn btn-glow btn-full" onclick="openModal('registerModal')">Начать бесплатно</button>
-                </div>
-
-                <div class="plan-card">
-                    <div class="plan-header">
-                        <span class="plan-name">Supernova</span>
-                        <div class="plan-price">
-                            <span class="price">Бесплатно</span>
-                            <span class="period">навсегда</span>
-                        </div>
-                    </div>
-                    <ul class="plan-features">
-                        <li><i class="fas fa-check"></i> 6 ГБ RAM</li>
-                        <li><i class="fas fa-check"></i> 50 ГБ SSD</li>
-                        <li><i class="fas fa-check"></i> 100 слотов</li>
-                        <li><i class="fas fa-check"></i> 3 сервера</li>
-                        <li><i class="fas fa-check"></i> Все ядра</li>
-                        <li><i class="fas fa-check"></i> Плагины & Моды</li>
-                        <li><i class="fas fa-check"></i> DDoS защита</li>
-                        <li><i class="fas fa-check"></i> Бесплатный домен</li>
-                        <li><i class="fas fa-check"></i> MySQL база данных</li>
-                        <li><i class="fas fa-check"></i> Приоритетная поддержка</li>
-                    </ul>
-                    <button class="btn btn-outline btn-full" onclick="openModal('registerModal')">Начать бесплатно</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Панель управления -->
-    <section class="panel-section" id="panel">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-badge">Панель управления</span>
-                <h2>Мощная <span class="gradient-text">панель управления</span></h2>
-                <p>Попробуйте демо нашей панели управления сервером</p>
-            </div>
-            
-            <div class="panel-demo">
-                <div class="panel-sidebar">
-                    <div class="panel-user">
-                        <div class="user-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <span class="user-name">Player123</span>
-                    </div>
-                    <nav class="panel-nav">
-                        <a href="#" class="panel-nav-item active" onclick="switchTab(event, 'console')">
-                            <i class="fas fa-terminal"></i> Консоль
-                        </a>
-                        <a href="#" class="panel-nav-item" onclick="switchTab(event, 'files')">
-                            <i class="fas fa-folder"></i> Файлы
-                        </a>
-                        <a href="#" class="panel-nav-item" onclick="switchTab(event, 'plugins')">
-                            <i class="fas fa-plug"></i> Плагины
-                        </a>
-                        <a href="#" class="panel-nav-item" onclick="switchTab(event, 'players')">
-                            <i class="fas fa-users"></i> Игроки
-                        </a>
-                        <a href="#" class="panel-nav-item" onclick="switchTab(event, 'settings')">
-                            <i class="fas fa-cog"></i> Настройки
-                        </a>
-                        <a href="#" class="panel-nav-item" onclick="switchTab(event, 'backups')">
-                            <i class="fas fa-save"></i> Бэкапы
-                        </a>
-                        <a href="#" class="panel-nav-item" onclick="switchTab(event, 'worlds')">
-                            <i class="fas fa-globe"></i> Миры
-                        </a>
-                    </nav>
-                </div>
-                <div class="panel-main">
-                    <!-- Статус бар -->
-                    <div class="panel-status-bar">
-                        <div class="server-status online">
-                            <span class="status-dot"></span>
-                            <span>Онлайн</span>
-                        </div>
-                        <div class="status-info">
-                            <span><i class="fas fa-memory"></i> 2.4 / 4 ГБ</span>
-                            <span><i class="fas fa-microchip"></i> 34% CPU</span>
-                            <span><i class="fas fa-users"></i> 12 / 50</span>
-                            <span><i class="fas fa-clock"></i> 14:32:10</span>
-                        </div>
-                        <div class="server-controls">
-                            <button class="ctrl-btn start" onclick="serverAction('start')" title="Запустить">
-                                <i class="fas fa-play"></i>
-                            </button>
-                            <button class="ctrl-btn restart" onclick="serverAction('restart')" title="Перезапустить">
-                                <i class="fas fa-redo"></i>
-                            </button>
-                            <button class="ctrl-btn stop" onclick="serverAction('stop')" title="Остановить">
-                                <i class="fas fa-stop"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Консоль -->
-                    <div class="panel-tab active" id="tab-console">
-                        <div class="console-output" id="consoleOutput">
-                            <div class="console-line info">[14:30:01 INFO]: Starting Minecraft server on *:25565</div>
-                            <div class="console-line info">[14:30:02 INFO]: Loading properties</div>
-                            <div class="console-line info">[14:30:02 INFO]: Default game type: SURVIVAL</div>
-                            <div class="console-line info">[14:30:03 INFO]: Preparing level "world"</div>
-                            <div class="console-line info">[14:30:05 INFO]: Preparing start region for dimension minecraft:overworld</div>
-                            <div class="console-line success">[14:30:08 INFO]: Done (6.234s)! For help, type "help"</div>
-                            <div class="console-line info">[14:30:15 INFO]: Player123 joined the game</div>
-                            <div class="console-line warn">[14:31:02 WARN]: Can't keep up! Is the server overloaded?</div>
-                            <div class="console-line info">[14:31:45 INFO]: Steve joined the game</div>
-                            <div class="console-line info">[14:32:10 INFO]: 12 players online</div>
-                        </div>
-                        <div class="console-input-area">
-                            <span class="console-prompt">></span>
-                            <input type="text" class="console-input" id="consoleInput" placeholder="Введите команду..." onkeydown="handleConsoleInput(event)">
-                            <button class="btn btn-primary btn-small" onclick="sendCommand()">Отправить</button>
-                        </div>
-                    </div>
-
-                    <!-- Файлы -->
-                    <div class="panel-tab" id="tab-files">
-                        <div class="files-toolbar">
-                            <div class="breadcrumb">
-                                <span><i class="fas fa-home"></i></span>
-                                <span>/ server</span>
-                            </div>
-                            <div class="files-actions">
-                                <button class="btn btn-small btn-outline"><i class="fas fa-upload"></i> Загрузить</button>
-                                <button class="btn btn-small btn-outline"><i class="fas fa-folder-plus"></i> Новая папка</button>
-                                <button class="btn btn-small btn-outline"><i class="fas fa-file-plus"></i> Новый файл</button>
-                            </div>
-                        </div>
-                        <div class="files-list">
-                            <div class="file-item folder">
-                                <i class="fas fa-folder"></i>
-                                <span class="file-name">plugins</span>
-                                <span class="file-size">-</span>
-                                <span class="file-date">2024-01-15</span>
-                            </div>
-                            <div class="file-item folder">
-                                <i class="fas fa-folder"></i>
-                                <span class="file-name">world</span>
-                                <span class="file-size">-</span>
-                                <span class="file-date">2024-01-15</span>
-                            </div>
-                            <div class="file-item folder">
-                                <i class="fas fa-folder"></i>
-                                <span class="file-name">world_nether</span>
-                                <span class="file-size">-</span>
-                                <span class="file-date">2024-01-14</span>
-                            </div>
-                            <div class="file-item folder">
-                                <i class="fas fa-folder"></i>
-                                <span class="file-name">world_the_end</span>
-                                <span class="file-size">-</span>
-                                <span class="file-date">2024-01-14</span>
-                            </div>
-                            <div class="file-item folder">
-                                <i class="fas fa-folder"></i>
-                                <span class="file-name">logs</span>
-                                <span class="file-size">-</span>
-                                <span class="file-date">2024-01-15</span>
-                            </div>
-                            <div class="file-item">
-                                <i class="fas fa-file-code"></i>
-                                <span class="file-name">server.properties</span>
-                                <span class="file-size">1.2 KB</span>
-                                <span class="file-date">2024-01-15</span>
-                            </div>
-                            <div class="file-item">
-                                <i class="fas fa-file"></i>
-                                <span class="file-name">paper.jar</span>
-                                <span class="file-size">42.3 MB</span>
-                                <span class="file-date">2024-01-13</span>
-                            </div>
-                            <div class="file-item">
-                                <i class="fas fa-file-code"></i>
-                                <span class="file-name">bukkit.yml</span>
-                                <span class="file-size">3.4 KB</span>
-                                <span class="file-date">2024-01-15</span>
-                            </div>
-                            <div class="file-item">
-                                <i class="fas fa-file-alt"></i>
-                                <span class="file-name">eula.txt</span>
-                                <span class="file-size">0.1 KB</span>
-                                <span class="file-date">2024-01-13</span>
-                            </div>
-                            <div class="file-item">
-                                <i class="fas fa-file-code"></i>
-                                <span class="file-name">spigot.yml</span>
-                                <span class="file-size">2.8 KB</span>
-                                <span class="file-date">2024-01-15</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Плагины -->
-                    <div class="panel-tab" id="tab-plugins">
-                        <div class="plugins-search">
-                            <div class="search-box">
-                                <i class="fas fa-search"></i>
-                                <input type="text" placeholder="Поиск плагинов..." id="pluginSearch" oninput="searchPlugins()">
-                            </div>
-                            <div class="plugin-filters">
-                                <button class="filter-btn active">Все</button>
-                                <button class="filter-btn">Установленные</button>
-                                <button class="filter-btn">Популярные</button>
-                            </div>
-                        </div>
-                        <div class="plugins-grid" id="pluginsGrid">
-                            <!-- Заполняется через JS -->
-                        </div>
-                    </div>
-
-                    <!-- Игроки -->
-                    <div class="panel-tab" id="tab-players">
-                        <div class="players-header">
-                            <h3><i class="fas fa-users"></i> Онлайн игроки (12/50)</h3>
-                        </div>
-                        <div class="players-list" id="playersList">
-                            <!-- Заполняется через JS -->
-                        </div>
-                    </div>
-
-                    <!-- Настройки -->
-                    <div class="panel-tab" id="tab-settings">
-                        <div class="settings-form">
-                            <h3><i class="fas fa-cog"></i> Настройки сервера</h3>
-                            <div class="settings-grid">
-                                <div class="setting-group">
-                                    <label>Название сервера</label>
-                                    <input type="text" value="My Galaxy Server" class="setting-input">
-                                </div>
-                                <div class="setting-group">
-                                    <label>Ядро сервера</label>
-                                    <select class="setting-input">
-                                        <option selected>Paper 1.20.4</option>
-                                        <option>Paper 1.20.2</option>
-                                        <option>Paper 1.19.4</option>
-                                        <option>Spigot 1.20.4</option>
-                                        <option>Purpur 1.20.4</option>
-                                        <option>Fabric 1.20.4</option>
-                                        <option>Forge 1.20.4</option>
-                                        <option>Vanilla 1.20.4</option>
-                                    </select>
-                                </div>
-                                <div class="setting-group">
-                                    <label>Версия Minecraft</label>
-                                    <select class="setting-input">
-                                        <option selected>1.20.4</option>
-                                        <option>1.20.2</option>
-                                        <option>1.19.4</option>
-                                        <option>1.18.2</option>
-                                        <option>1.17.1</option>
-                                        <option>1.16.5</option>
-                                        <option>1.12.2</option>
-                                        <option>1.8.8</option>
-                                    </select>
-                                </div>
-                                <div class="setting-group">
-                                    <label>Режим игры</label>
-                                    <select class="setting-input">
-                                        <option selected>Survival</option>
-                                        <option>Creative</option>
-                                        <option>Adventure</option>
-                                        <option>Spectator</option>
-                                    </select>
-                                </div>
-                                <div class="setting-group">
-                                    <label>Сложность</label>
-                                    <select class="setting-input">
-                                        <option>Peaceful</option>
-                                        <option>Easy</option>
-                                        <option selected>Normal</option>
-                                        <option>Hard</option>
-                                        <option>Hardcore</option>
-                                    </select>
-                                </div>
-                                <div class="setting-group">
-                                    <label>Макс. игроков</label>
-                                    <input type="number" value="50" class="setting-input" min="1" max="100">
-                                </div>
-                                <div class="setting-group">
-                                    <label>MOTD (описание)</label>
-                                    <input type="text" value="§a✦ Galaxy Server §7| §eBest Survival" class="setting-input">
-                                </div>
-                                <div class="setting-group">
-                                    <label>Оперативная память</label>
-                                    <select class="setting-input">
-                                        <option>1 ГБ</option>
-                                        <option>2 ГБ</option>
-                                        <option selected>4 ГБ</option>
-                                        <option>6 ГБ</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="settings-toggles">
-                                <div class="toggle-item">
-                                    <span>PvP</span>
-                                    <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
-                                </div>
-                                <div class="toggle-item">
-                                    <span>Командные блоки</span>
-                                    <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
-                                </div>
-                                <div class="toggle-item">
-                                    <span>Пиратка (cracked)</span>
-                                    <label class="toggle"><input type="checkbox"><span class="slider"></span></label>
-                                </div>
-                                <div class="toggle-item">
-                                    <span>Полёт</span>
-                                    <label class="toggle"><input type="checkbox"><span class="slider"></span></label>
-                                </div>
-                                <div class="toggle-item">
-                                    <span>Nether</span>
-                                    <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
-                                </div>
-                                <div class="toggle-item">
-                                    <span>The End</span>
-                                    <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
-                                </div>
-                            </div>
-                            <button class="btn btn-glow" onclick="showNotification('Настройки сохранены!', 'success')">
-                                <i class="fas fa-save"></i> Сохранить настройки
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Бэкапы -->
-                    <div class="panel-tab" id="tab-backups">
-                        <div class="backups-header">
-                            <h3><i class="fas fa-save"></i> Резервные копии</h3>
-                            <button class="btn btn-primary btn-small" onclick="createBackup()">
-                                <i class="fas fa-plus"></i> Создать бэкап
-                            </button>
-                        </div>
-                        <div class="backups-list">
-                            <div class="backup-item">
-                                <div class="backup-info">
-                                    <i class="fas fa-archive"></i>
-                                    <div>
-                                        <span class="backup-name">backup_2024-01-15_14-30.zip</span>
-                                        <span class="backup-size">156.3 MB • Авто-бэкап</span>
-                                    </div>
-                                </div>
-                                <div class="backup-actions">
-                                    <button class="btn btn-small btn-outline"><i class="fas fa-download"></i></button>
-                                    <button class="btn btn-small btn-outline"><i class="fas fa-undo"></i></button>
-                                    <button class="btn btn-small btn-danger"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                            <div class="backup-item">
-                                <div class="backup-info">
-                                    <i class="fas fa-archive"></i>
-                                    <div>
-                                        <span class="backup-name">backup_2024-01-14_14-30.zip</span>
-                                        <span class="backup-size">148.7 MB • Авто-бэкап</span>
-                                    </div>
-                                </div>
-                                <div class="backup-actions">
-                                    <button class="btn btn-small btn-outline"><i class="fas fa-download"></i></button>
-                                    <button class="btn btn-small btn-outline"><i class="fas fa-undo"></i></button>
-                                    <button class="btn btn-small btn-danger"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                            <div class="backup-item">
-                                <div class="backup-info">
-                                    <i class="fas fa-archive"></i>
-                                    <div>
-                                        <span class="backup-name">backup_2024-01-13_manual.zip</span>
-                                        <span class="backup-size">145.1 MB • Ручной</span>
-                                    </div>
-                                </div>
-                                <div class="backup-actions">
-                                    <button class="btn btn-small btn-outline"><i class="fas fa-download"></i></button>
-                                    <button class="btn btn-small btn-outline"><i class="fas fa-undo"></i></button>
-                                    <button class="btn btn-small btn-danger"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Миры -->
-                    <div class="panel-tab" id="tab-worlds">
-                        <div class="worlds-header">
-                            <h3><i class="fas fa-globe"></i> Управление мирами</h3>
-                        </div>
-                        <div class="worlds-grid">
-                            <div class="world-card">
-                                <div class="world-icon overworld">🌍</div>
-                                <h4>world</h4>
-                                <p>Overworld • 234.5 MB</p>
-                                <div class="world-actions">
-                                    <button class="btn btn-small btn-outline">Сбросить</button>
-                                    <button class="btn btn-small btn-outline">Скачать</button>
-                                </div>
-                            </div>
-                            <div class="world-card">
-                                <div class="world-icon nether">🔥</div>
-                                <h4>world_nether</h4>
-                                <p>Nether • 45.2 MB</p>
-                                <div class="world-actions">
-                                    <button class="btn btn-small btn-outline">Сбросить</button>
-                                    <button class="btn btn-small btn-outline">Скачать</button>
-                                </div>
-                            </div>
-                            <div class="world-card">
-                                <div class="world-icon end">🌑</div>
-                                <h4>world_the_end</h4>
-                                <p>The End • 12.8 MB</p>
-                                <div class="world-actions">
-                                    <button class="btn btn-small btn-outline">Сбросить</button>
-                                    <button class="btn btn-small btn-outline">Скачать</button>
-                                </div>
-                            </div>
-                            <div class="world-card upload">
-                                <div class="world-icon">📁</div>
-                                <h4>Загрузить мир</h4>
-                                <p>Перетащите .zip файл сюда</p>
-                                <button class="btn btn-small btn-primary">Загрузить</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Как начать -->
-    <section class="how-it-works">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-badge">Как начать</span>
-                <h2>3 простых <span class="gradient-text">шага</span></h2>
-            </div>
-            <div class="steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <div class="step-icon"><i class="fas fa-user-plus"></i></div>
-                    <h3>Зарегистрируйтесь</h3>
-                    <p>Создайте аккаунт за 10 секунд. Нужен только email</p>
-                </div>
-                <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <div class="step-icon"><i class="fas fa-server"></i></div>
-                    <h3>Настройте сервер</h3>
-                    <p>Выберите версию, ядро и тариф. Настройка в пару кликов</p>
-                </div>
-                <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <div class="step-icon"><i class="fas fa-gamepad"></i></div>
-                    <h3>Играйте!</h3>
-                    <p>Подключитесь к серверу и пригласите друзей играть</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="faq-section" id="faq">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-badge">FAQ</span>
-                <h2>Часто задаваемые <span class="gradient-text">вопросы</span></h2>
-            </div>
-            <div class="faq-list">
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-question">
-                        <span>Это действительно бесплатно?</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Да! GalaxyHosting полностью бесплатный. Мы зарабатываем на рекламе и добровольных пожертвованиях. Все тарифы бесплатны навсегда без скрытых платежей.</p>
-                    </div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-question">
-                        <span>Какие версии Minecraft поддерживаются?</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Мы поддерживаем все версии Java Edition (от 1.7.10 до последней) и Bedrock Edition. Также поддерживаются все популярные ядра: Paper, Spigot, Purpur, Forge, Fabric, Vanilla и другие.</p>
-                    </div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-question">
-                        <span>Могу ли я установить моды и плагины?</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Конечно! Вы можете устанавливать любые плагины и моды. У нас есть встроенный каталог с более чем 5000 плагинов, а также вы можете загружать свои .jar файлы через файловый менеджер.</p>
-                    </div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-question">
-                        <span>Сервер работает 24/7?</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Да, ваш сервер работает круглосуточно. Не нужно держать вкладку открытой. Сервер автоматически перезапускается при сбоях.</p>
-                    </div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-question">
-                        <span>Могут ли пиратки подключаться к серверу?</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Да, в настройках сервера вы можете включить режим "cracked" (offline-mode), чтобы игроки с нелицензионной версией могли подключаться.</p>
-                    </div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-question">
-                        <span>Как подключиться к серверу?</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>После создания сервера вы получите адрес вида yourserver.galaxyhost.net. Введите его в Minecraft в разделе "Multiplayer" → "Add Server".</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <div class="logo">
-                        <span class="logo-icon">🌌</span>
-                        <span class="logo-text">Galaxy<span class="accent">Hosting</span></span>
-                    </div>
-                    <p>Бесплатный хостинг Minecraft серверов с мощной панелью управления и поддержкой всех версий.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-discord"></i></a>
-                        <a href="#"><i class="fab fa-telegram"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="#"><i class="fab fa-github"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h4>Хостинг</h4>
-                    <a href="#">Minecraft Java</a>
-                    <a href="#">Minecraft Bedrock</a>
-                    <a href="#">Forge серверы</a>
-                    <a href="#">Fabric серверы</a>
-                    <a href="#">BungeeCord / Velocity</a>
-                </div>
-                <div class="footer-links">
-                    <h4>Ресурсы</h4>
-                    <a href="#">Документация</a>
-                    <a href="#">База знаний</a>
-                    <a href="#">Статус серверов</a>
-                    <a href="#">API</a>
-                    <a href="#">Блог</a>
-                </div>
-                <div class="footer-links">
-                    <h4>Компания</h4>
-                    <a href="#">О нас</a>
-                    <a href="#">Контакты</a>
-                    <a href="#">Политика конфиденциальности</a>
-                    <a href="#">Условия использования</a>
-                    <a href="#">Партнёрская программа</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>© 2024 GalaxyHosting. Все права защищены. Не является продуктом Mojang Studios.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Модальное окно входа -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal">
-            <button class="modal-close" onclick="closeModal('loginModal')"><i class="fas fa-times"></i></button>
-            <div class="modal-header">
-                <span class="logo-icon">🌌</span>
-                <h2>Вход в аккаунт</h2>
-                <p>Войдите в панель управления</p>
-            </div>
-            <form class="modal-form" onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label><i class="fas fa-envelope"></i> Email</label>
-                    <input type="email" placeholder="your@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Пароль</label>
-                    <input type="password" placeholder="••••••••" required>
-                </div>
-                <div class="form-options">
-                    <label class="checkbox-label">
-                        <input type="checkbox"> Запомнить меня
-                    </label>
-                    <a href="#" class="forgot-link">Забыли пароль?</a>
-                </div>
-                <button type="submit" class="btn btn-glow btn-full">
-                    <i class="fas fa-sign-in-alt"></i> Войти
-                </button>
-                <div class="form-divider"><span>или</span></div>
-                <button type="button" class="btn btn-glass btn-full" onclick="showNotification('Google авторизация скоро!', 'info')">
-                    <i class="fab fa-google"></i> Войти через Google
-                </button>
-                <button type="button" class="btn btn-glass btn-full" onclick="showNotification('Discord авторизация скоро!', 'info')">
-                    <i class="fab fa-discord"></i> Войти через Discord
-                </button>
-            </form>
-            <p class="modal-footer-text">Нет аккаунта? <a href="#" onclick="closeModal('loginModal'); openModal('registerModal')">Зарегистрируйтесь</a></p>
-        </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Сервер</div>
+      <button class="sidebar-btn active" onclick="goPage('dashboard',this)">
+        <span class="icon">📊</span> Панель
+      </button>
+      <button class="sidebar-btn" onclick="goPage('console',this)">
+        <span class="icon">💻</span> Консоль
+      </button>
+      <button class="sidebar-btn" onclick="goPage('players',this)">
+        <span class="icon">👥</span> Игроки
+      </button>
+      <button class="sidebar-btn" onclick="goPage('settings',this)">
+        <span class="icon">⚙️</span> Настройки
+      </button>
     </div>
 
-    <!-- Модальное окно регистрации -->
-    <div class="modal-overlay" id="registerModal">
-        <div class="modal">
-            <button class="modal-close" onclick="closeModal('registerModal')"><i class="fas fa-times"></i></button>
-            <div class="modal-header">
-                <span class="logo-icon">🌌</span>
-                <h2>Создать аккаунт</h2>
-                <p>Бесплатный Minecraft сервер за 30 секунд</p>
-            </div>
-            <form class="modal-form" onsubmit="handleRegister(event)">
-                <div class="form-group">
-                    <label><i class="fas fa-user"></i> Имя пользователя</label>
-                    <input type="text" placeholder="Player123" required>
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-envelope"></i> Email</label>
-                    <input type="email" placeholder="your@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Пароль</label>
-                    <input type="password" placeholder="Минимум 8 символов" required minlength="8">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-server"></i> Название сервера</label>
-                    <input type="text" placeholder="My Awesome Server" required>
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-gamepad"></i> Тариф</label>
-                    <select required>
-                        <option value="starter">Starter (2 ГБ RAM)</option>
-                        <option value="galaxy" selected>Galaxy (4 ГБ RAM) ⭐</option>
-                        <option value="supernova">Supernova (6 ГБ RAM)</option>
-                    </select>
-                </div>
-                <label class="checkbox-label">
-                    <input type="checkbox" required> Я согласен с <a href="#">Условиями использования</a>
-                </label>
-                <button type="submit" class="btn btn-glow btn-full">
-                    <i class="fas fa-rocket"></i> Создать сервер
-                </button>
-                <div class="form-divider"><span>или</span></div>
-                <button type="button" class="btn btn-glass btn-full" onclick="showNotification('Google регистрация скоро!', 'info')">
-                    <i class="fab fa-google"></i> Регистрация через Google
-                </button>
-            </form>
-            <p class="modal-footer-text">Уже есть аккаунт? <a href="#" onclick="closeModal('registerModal'); openModal('loginModal')">Войдите</a></p>
-        </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Контент</div>
+      <button class="sidebar-btn" onclick="goPage('plugins',this)">
+        <span class="icon">🔌</span> Плагины
+      </button>
+      <button class="sidebar-btn" onclick="goPage('mods',this)">
+        <span class="icon">📦</span> Моды
+      </button>
+      <button class="sidebar-btn" onclick="goPage('worlds',this)">
+        <span class="icon">🌍</span> Миры
+      </button>
     </div>
 
-    <!-- Уведомления -->
-    <div class="notifications" id="notifications"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Файлы</div>
+      <button class="sidebar-btn" onclick="goPage('files',this)">
+        <span class="icon">📂</span> Файловый менеджер
+      </button>
+      <button class="sidebar-btn" onclick="goPage('editor',this)">
+        <span class="icon">📝</span> Редактор кода
+      </button>
+    </div>
 
-    <!-- Кнопка наверх -->
-    <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-        <i class="fas fa-arrow-up"></i>
-    </button>
+  </nav>
+  <div class="sidebar-status">
+    <div>
+      <span class="status-dot on" id="statusDot"></span>
+      <span class="status-text" id="statusText">Онлайн</span>
+    </div>
+    <div class="srv-addr" id="srvAddr">play.myserver.Galaxy</div>
+  </div>
+</aside>
 
-    <script src="script.js"></script>
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+        <span></span><span></span><span></span>
+      </button>
+      <span class="topbar-title" id="pageTitle">📊 Панель управления</span>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn green" onclick="startServer()">▶ Старт</button>
+      <button class="topbar-btn red" onclick="stopServer()">⏹ Стоп</button>
+      <button class="topbar-btn" onclick="restartServer()">🔄 Рестарт</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="label">Статус</div>
+          <div class="value green" id="dashStatus">Онлайн</div>
+        </div>
+        <div class="stat-box">
+          <div class="label">Игроки</div>
+          <div class="value cyan" id="dashPlayers">3 / 20</div>
+        </div>
+        <div class="stat-box">
+          <div class="label">RAM</div>
+          <div class="value pink" id="dashRam">1.2 / 2 ГБ</div>
+        </div>
+        <div class="stat-box">
+          <div class="label">TPS</div>
+          <div class="value yellow" id="dashTps">20.0</div>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="label">Версия</div>
+          <div class="value" style="font-size:1.1rem">Paper 1.20.4</div>
+        </div>
+        <div class="stat-box">
+          <div class="label">Аптайм</div>
+          <div class="value cyan">2ч 34м</div>
+        </div>
+        <div class="stat-box">
+          <div class="label">CPU</div>
+          <div class="value pink">23%</div>
+        </div>
+        <div class="stat-box">
+          <div class="label">Диск</div>
+          <div class="value yellow">3.2 / 10 ГБ</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">⚡ Быстрые действия</div>
+        <div class="card-body" style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="p-btn p-btn-install" onclick="goPage('console',document.querySelectorAll('.sidebar-btn')[1])">💻 Консоль</button>
+          <button class="p-btn p-btn-install" onclick="goPage('plugins',document.querySelectorAll('.sidebar-btn')[4])">🔌 Плагины</button>
+          <button class="p-btn p-btn-install" onclick="goPage('worlds',document.querySelectorAll('.sidebar-btn')[6])">🌍 Миры</button>
+          <button class="p-btn p-btn-install" onclick="goPage('files',document.querySelectorAll('.sidebar-btn')[7])">📂 Файлы</button>
+          <button class="p-btn p-btn-edit" onclick="goPage('settings',document.querySelectorAll('.sidebar-btn')[3])">⚙️ Настройки</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">📋 Последние события</div>
+        <div class="card-body">
+          <div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)">🟢 <b>Alex_Gamer</b> присоединился — <span style="color:var(--muted)">2 мин назад</span></div>
+          <div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)">🔌 Плагин <b>WorldEdit</b> загружен — <span style="color:var(--muted)">15 мин назад</span></div>
+          <div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)">🌍 Мир <b>world</b> сохранён — <span style="color:var(--muted)">30 мин назад</span></div>
+          <div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)">🚀 Сервер запущен — <span style="color:var(--muted)">2 часа назад</span></div>
+          <div style="padding:8px 0">🔄 Бэкап создан — <span style="color:var(--muted)">6 часов назад</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONSOLE -->
+    <div class="page" id="page-console">
+      <div class="card">
+        <div class="card-head">
+          <span>💻 Консоль сервера</span>
+          <button class="p-btn p-btn-edit" onclick="clearConsole()">🗑️ Очистить</button>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div class="console-box">
+            <div class="console-output" id="consoleOutput">
+              <div class="info">[INFO] Starting server on play.myserver.Galaxy:25565</div>
+              <div class="info">[INFO] Loading properties</div>
+              <div class="ok">[INFO] Default game type: SURVIVAL</div>
+              <div class="info">[INFO] Preparing level "world"</div>
+              <div class="ok">[INFO] Done (3.241s)! Type "help" for help</div>
+              <div class="info">[INFO] Alex_Gamer joined the game</div>
+              <div class="info">[INFO] ProBuilder joined the game</div>
+              <div class="warn">[WARN] Can't keep up! Is the server overloaded?</div>
+              <div class="info">[INFO] CraftQueen joined the game</div>
+            </div>
+            <div class="console-input-wrap">
+              <span class="console-prefix">server &gt;</span>
+              <input type="text" class="console-input" id="consoleInput"
+                placeholder="Введи команду..."
+                onkeydown="if(event.key==='Enter')sendCommand()"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLAYERS -->
+    <div class="page" id="page-players">
+      <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-box"><div class="label">Онлайн сейчас</div><div class="value green">3</div></div>
+        <div class="stat-box"><div class="label">Максимум сегодня</div><div class="value cyan">12</div></div>
+        <div class="stat-box"><div class="label">Всего зашло</div><div class="value pink">847</div></div>
+      </div>
+      <div class="card">
+        <div class="card-head">👥 Игроки онлайн</div>
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Игрок</th><th>Роль</th><th>Статус</th><th>Время</th><th>Пинг</th><th>Действия</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div class="player-name"><div class="player-ava">🧑‍🚀</div>Alex_Gamer</div></td>
+                  <td><span class="badge badge-op">OP</span></td>
+                  <td><span class="badge badge-on">Онлайн</span></td>
+                  <td>1ч 22м</td>
+                  <td style="color:var(--green)">12ms</td>
+                  <td><button class="kick-btn" onclick="kickPlayer('Alex_Gamer')">Кик</button></td>
+                </tr>
+                <tr>
+                  <td><div class="player-name"><div class="player-ava">👨‍💻</div>ProBuilder</div></td>
+                  <td><span class="badge badge-member">Игрок</span></td>
+                  <td><span class="badge badge-on">Онлайн</span></td>
+                  <td>45м</td>
+                  <td style="color:var(--green)">18ms</td>
+                  <td><button class="kick-btn" onclick="kickPlayer('ProBuilder')">Кик</button></td>
+                </tr>
+                <tr>
+                  <td><div class="player-name"><div class="player-ava">👩‍🎮</div>CraftQueen</div></td>
+                  <td><span class="badge badge-member">Игрок</span></td>
+                  <td><span class="badge badge-on">Онлайн</span></td>
+                  <td>20м</td>
+                  <td style="color:var(--yellow)">34ms</td>
+                  <td><button class="kick-btn" onclick="kickPlayer('CraftQueen')">Кик</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">🚫 Бан-лист</div>
+        <div class="card-body">
+          <div style="display:flex;gap:10px;margin-bottom:14px">
+            <input type="text" class="inp" id="banInput" placeholder="Ник игрока для бана" style="max-width:300px"/>
+            <button class="p-btn p-btn-remove" onclick="banPlayer()">🚫 Забанить</button>
+          </div>
+          <div id="banList" style="color:var(--muted)">Бан-лист пуст</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page" id="page-settings">
+      <div class="settings-grid">
+        <div class="card">
+          <div class="card-head">🏷️ Основные настройки</div>
+          <div class="card-body">
+            <div class="field">
+              <label>Название сервера</label>
+              <input type="text" class="inp" id="setName" value="GalaxyWorld" oninput="updateSrvAddr()"/>
+            </div>
+            <div class="field">
+              <label>MOTD</label>
+              <input type="text" class="inp" id="setMotd" value="Добро пожаловать на Galaxy Server!"/>
+            </div>
+            <div class="field">
+              <label>Макс. игроков</label>
+              <input type="number" class="inp" value="20" min="1" max="100"/>
+            </div>
+            <div class="field">
+              <label>Версия Minecraft</label>
+              <select class="inp">
+                <option>1.20.4</option>
+                <option>1.20.2</option>
+                <option>1.19.4</option>
+                <option>1.18.2</option>
+                <option>1.16.5</option>
+                <option>1.12.2</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Ядро</label>
+              <select class="inp">
+                <option>Paper</option>
+                <option>Spigot</option>
+                <option>Purpur</option>
+                <option>Fabric</option>
+                <option>Forge</option>
+                <option>Vanilla</option>
+              </select>
+            </div>
+            <button class="p-btn p-btn-install" onclick="saveSettings()">💾 Сохранить</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">🎮 Игровые настройки</div>
+          <div class="card-body">
+            <div class="field">
+              <label>Режим игры</label>
+              <select class="inp">
+                <option>Survival</option><option>Creative</option>
+                <option>Adventure</option><option>Hardcore</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Сложность</label>
+              <select class="inp">
+                <option>Easy</option><option selected>Normal</option>
+                <option>Hard</option><option>Peaceful</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Сид мира</label>
+              <input type="text" class="inp" placeholder="Пусто = случайный"/>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">PvP</div><div class="toggle-sub">Разрешить PvP</div></div>
+              <button class="switch on" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Командные блоки</div><div class="toggle-sub">Включить</div></div>
+              <button class="switch" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Полёт</div><div class="toggle-sub">Разрешить полёт</div></div>
+              <button class="switch" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Белый список</div><div class="toggle-sub">Только вайтлист</div></div>
+              <button class="switch" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Крякнутые</div><div class="toggle-sub">Нелицензионные игроки</div></div>
+              <button class="switch on" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <button class="p-btn p-btn-install" onclick="saveSettings()" style="margin-top:14px">💾 Сохранить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLUGINS -->
+    <div class="page" id="page-plugins">
+      <div class="card">
+        <div class="card-head">📤 Загрузить плагин с ПК</div>
+        <div class="card-body">
+          <div class="upload-zone"
+            onclick="document.getElementById('pluginFile').click()"
+            ondragover="event.preventDefault();this.classList.add('drag')"
+            ondragleave="this.classList.remove('drag')"
+            ondrop="event.preventDefault();this.classList.remove('drag');handlePluginUpload(event.dataTransfer.files)">
+            <div class="upload-icon">📦</div>
+            <div class="upload-text">Перетащи .jar файл сюда или нажми для выбора</div>
+            <div class="upload-sub">Bukkit / Spigot / Paper плагины (.jar)</div>
+          </div>
+          <input type="file" id="pluginFile" accept=".jar" style="display:none" multiple onchange="handlePluginUpload(this.files)"/>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">🔌 Установленные плагины</div>
+        <div class="card-body">
+          <div class="plugin-grid" id="pluginList">
+            <div class="plugin-card">
+              <div class="plugin-head">
+                <div class="plugin-icon">🛡️</div>
+                <div><div class="plugin-name">WorldGuard</div><div class="plugin-ver">v7.0.9 <span class="installed-badge">Установлен</span></div></div>
+              </div>
+              <div class="plugin-desc">Защита регионов, флаги и анти-гриф.</div>
+              <div class="plugin-actions">
+                <button class="p-btn p-btn-edit" onclick="loadPluginConfig('WorldGuard')">📝 Настроить</button>
+                <button class="p-btn p-btn-remove" onclick="removePlugin('WorldGuard',this)">🗑️ Удалить</button>
+              </div>
+            </div>
+            <div class="plugin-card">
+              <div class="plugin-head">
+                <div class="plugin-icon">🏗️</div>
+                <div><div class="plugin-name">WorldEdit</div><div class="plugin-ver">v7.2.18 <span class="installed-badge">Установлен</span></div></div>
+              </div>
+              <div class="plugin-desc">Мощный редактор мира.</div>
+              <div class="plugin-actions">
+                <button class="p-btn p-btn-edit" onclick="loadPluginConfig('WorldEdit')">📝 Настроить</button>
+                <button class="p-btn p-btn-remove" onclick="removePlugin('WorldEdit',this)">🗑️ Удалить</button>
+              </div>
+            </div>
+            <div class="plugin-card">
+              <div class="plugin-head">
+                <div class="plugin-icon">💰</div>
+                <div><div class="plugin-name">EssentialsX</div><div class="plugin-ver">v2.20.1 <span class="installed-badge">Установлен</span></div></div>
+              </div>
+              <div class="plugin-desc">Экономика, команды, телепортации.</div>
+              <div class="plugin-actions">
+                <button class="p-btn p-btn-edit" onclick="loadPluginConfig('EssentialsX')">📝 Настроить</button>
+                <button class="p-btn p-btn-remove" onclick="removePlugin('EssentialsX',this)">🗑️ Удалить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODS -->
+    <div class="page" id="page-mods">
+      <div class="card">
+        <div class="card-head">📤 Загрузить мод с ПК</div>
+        <div class="card-body">
+          <div class="upload-zone"
+            onclick="document.getElementById('modFile').click()"
+            ondragover="event.preventDefault();this.classList.add('drag')"
+            ondragleave="this.classList.remove('drag')"
+            ondrop="event.preventDefault();this.classList.remove('drag');handleModUpload(event.dataTransfer.files)">
+            <div class="upload-icon">📦</div>
+            <div class="upload-text">Перетащи .jar мод сюда или нажми для выбора</div>
+            <div class="upload-sub">Forge / Fabric моды (.jar)</div>
+          </div>
+          <input type="file" id="modFile" accept=".jar" style="display:none" multiple onchange="handleModUpload(this.files)"/>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">📦 Установленные моды</div>
+        <div class="card-body">
+          <div class="plugin-grid" id="modList">
+            <div class="plugin-card">
+              <div class="plugin-head">
+                <div class="plugin-icon">🗺️</div>
+                <div><div class="plugin-name">JourneyMap</div><div class="plugin-ver">v5.9.18 <span class="installed-badge">Установлен</span></div></div>
+              </div>
+              <div class="plugin-desc">Миникарта в реальном времени.</div>
+              <div class="plugin-actions">
+                <button class="p-btn p-btn-remove" onclick="removePlugin('JourneyMap',this)">🗑️ Удалить</button>
+              </div>
+            </div>
+            <div class="plugin-card">
+              <div class="plugin-head">
+                <div class="plugin-icon">⚔️</div>
+                <div><div class="plugin-name">Tinkers Construct</div><div class="plugin-ver">v3.8.1 <span class="installed-badge">Установлен</span></div></div>
+              </div>
+              <div class="plugin-desc">Кастомное оружие и инструменты.</div>
+              <div class="plugin-actions">
+                <button class="p-btn p-btn-remove" onclick="removePlugin('Tinkers',this)">🗑️ Удалить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WORLDS -->
+    <div class="page" id="page-worlds">
+      <div class="card">
+        <div class="card-head">📤 Загрузить мир с ПК</div>
+        <div class="card-body">
+          <div class="upload-zone"
+            onclick="document.getElementById('worldFile').click()"
+            ondragover="event.preventDefault();this.classList.add('drag')"
+            ondragleave="this.classList.remove('drag')"
+            ondrop="event.preventDefault();this.classList.remove('drag');handleWorldUpload(event.dataTransfer.files)">
+            <div class="upload-icon">🌍</div>
+            <div class="upload-text">Перетащи .zip архив мира сюда или нажми</div>
+            <div class="upload-sub">Архив с папкой мира Minecraft (.zip)</div>
+          </div>
+          <input type="file" id="worldFile" accept=".zip" style="display:none" onchange="handleWorldUpload(this.files)"/>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">🌍 Миры на сервере</div>
+        <div class="card-body">
+          <div class="world-grid" id="worldList">
+            <div class="world-card">
+              <div class="world-icon">🌎</div>
+              <div class="world-name">world</div>
+              <div class="world-info">Overworld • 245 МБ • Сид: -123456789</div>
+              <div class="world-actions">
+                <button class="p-btn p-btn-install" onclick="notify('✅ Мир world — основной')">✅ Основной</button>
+                <button class="p-btn p-btn-edit" onclick="notify('📥 Скачивание...')">📥 Скачать</button>
+                <button class="p-btn p-btn-remove" onclick="deleteWorld('world',this.closest('.world-card'))">🗑️ Удалить</button>
+              </div>
+            </div>
+            <div class="world-card">
+              <div class="world-icon">🔥</div>
+              <div class="world-name">world_nether</div>
+              <div class="world-info">Nether • 82 МБ</div>
+              <div class="world-actions">
+                <button class="p-btn p-btn-edit" onclick="notify('📥 Скачивание...')">📥 Скачать</button>
+                <button class="p-btn p-btn-remove" onclick="deleteWorld('world_nether',this.closest('.world-card'))">🗑️ Удалить</button>
+              </div>
+            </div>
+            <div class="world-card">
+              <div class="world-icon">🌌</div>
+              <div class="world-name">world_the_end</div>
+              <div class="world-info">The End • 34 МБ</div>
+              <div class="world-actions">
+                <button class="p-btn p-btn-edit" onclick="notify('📥 Скачивание...')">📥 Скачать</button>
+                <button class="p-btn p-btn-remove" onclick="deleteWorld('world_the_end',this.closest('.world-card'))">🗑️ Удалить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">🔄 Пересоздать мир</div>
+        <div class="card-body">
+          <p style="color:var(--muted);margin-bottom:14px">⚠️ Текущий мир будет удалён и создан новый!</p>
+          <div class="field">
+            <label>Новый сид (пусто = случайный)</label>
+            <input type="text" class="inp" id="newSeed" placeholder="Например: 12345" style="max-width:300px"/>
+          </div>
+          <button class="p-btn p-btn-remove" onclick="recreateWorld()" style="font-size:1rem;padding:12px 20px">🔄 Пересоздать мир</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILES -->
+    <div class="page" id="page-files">
+      <div class="card">
+        <div class="card-head">📂 Файловый менеджер</div>
+        <div class="card-body">
+          <div class="file-toolbar">
+            <button class="p-btn p-btn-install" onclick="document.getElementById('fileUpload').click()">📤 Загрузить</button>
+            <button class="p-btn p-btn-edit" onclick="createNewFile()">📄 Новый файл</button>
+            <button class="p-btn p-btn-edit" onclick="createNewFolder()">📁 Новая папка</button>
+            <button class="p-btn p-btn-edit" onclick="goBack()">⬆️ Назад</button>
+            <input type="file" id="fileUpload" style="display:none" multiple onchange="handleFileUpload(this.files)"/>
+          </div>
+          <div class="file-path" id="filePath">📂 /home/server/</div>
+          <ul class="file-list" id="fileList">
+            <li class="file-item" ondblclick="openFolder('plugins')">
+              <span class="file-icon">📁</span><span class="file-name">plugins/</span><span class="file-size">—</span>
+              <div class="file-actions"><button class="kick-btn" onclick="event.stopPropagation();deleteFile('plugins')">🗑️</button></div>
+            </li>
+            <li class="file-item" ondblclick="openFolder('mods')">
+              <span class="file-icon">📁</span><span class="file-name">mods/</span><span class="file-size">—</span>
+              <div class="file-actions"><button class="kick-btn" onclick="event.stopPropagation();deleteFile('mods')">🗑️</button></div>
+            </li>
+            <li class="file-item" ondblclick="openFolder('world')">
+              <span class="file-icon">📁</span><span class="file-name">world/</span><span class="file-size">245 МБ</span>
+              <div class="file-actions"><button class="kick-btn" onclick="event.stopPropagation();deleteFile('world')">🗑️</button></div>
+            </li>
+            <li class="file-item" ondblclick="openFolder('config')">
+              <span class="file-icon">📁</span><span class="file-name">config/</span><span class="file-size">—</span>
+              <div class="file-actions"><button class="kick-btn" onclick="event.stopPropagation();deleteFile('config')">🗑️</button></div>
+            </li>
+            <li class="file-item" ondblclick="openFile('server.properties')">
+              <span class="file-icon">📄</span><span class="file-name">server.properties</span><span class="file-size">1.2 КБ</span>
+              <div class="file-actions">
+                <button class="kick-btn" onclick="event.stopPropagation();openFile('server.properties')" style="border-color:rgba(124,58,237,0.25);color:var(--primary)">📝</button>
+                <button class="kick-btn" onclick="event.stopPropagation();deleteFile('server.properties')">🗑️</button>
+              </div>
+            </li>
+            <li class="file-item" ondblclick="openFile('bukkit.yml')">
+              <span class="file-icon">📄</span><span class="file-name">bukkit.yml</span><span class="file-size">0.8 КБ</span>
+              <div class="file-actions">
+                <button class="kick-btn" onclick="event.stopPropagation();openFile('bukkit.yml')" style="border-color:rgba(124,58,237,0.25);color:var(--primary)">📝</button>
+                <button class="kick-btn" onclick="event.stopPropagation();deleteFile('bukkit.yml')">🗑️</button>
+              </div>
+            </li>
+            <li class="file-item" ondblclick="openFile('spigot.yml')">
+              <span class="file-icon">📄</span><span class="file-name">spigot.yml</span><span class="file-size">4.1 КБ</span>
+              <div class="file-actions">
+                <button class="kick-btn" onclick="event.stopPropagation();openFile('spigot.yml')" style="border-color:rgba(124,58,237,0.25);color:var(--primary)">📝</button>
+                <button class="kick-btn" onclick="event.stopPropagation();deleteFile('spigot.yml')">🗑️</button>
+              </div>
+            </li>
+            <li class="file-item" ondblclick="openFile('eula.txt')">
+              <span class="file-icon">📄</span><span class="file-name">eula.txt</span><span class="file-size">0.1 КБ</span>
+              <div class="file-actions">
+                <button class="kick-btn" onclick="event.stopPropagation();openFile('eula.txt')" style="border-color:rgba(124,58,237,0.25);color:var(--primary)">📝</button>
+                <button class="kick-btn" onclick="event.stopPropagation();deleteFile('eula.txt')">🗑️</button>
+              </div>
+            </li>
+            <li class="file-item">
+              <span class="file-icon">📄</span><span class="file-name">server.jar</span><span class="file-size">42.8 МБ</span>
+              <div class="file-actions"><button class="kick-btn" onclick="event.stopPropagation();deleteFile('server.jar')">🗑️</button></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDITOR -->
+    <div class="page" id="page-editor">
+      <div class="card">
+        <div class="card-head">
+          <span>📝 Редактор кода</span>
+          <div style="display:flex;gap:8px">
+            <button class="p-btn p-btn-install" onclick="saveFile()">💾 Сохранить</button>
+            <button class="p-btn p-btn-edit" onclick="goPage('files',document.querySelectorAll('.sidebar-btn')[7])">📂 К файлам</button>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div class="editor-wrap">
+            <div class="editor-topbar">
+              <span class="editor-filename" id="editorFilename">server.properties</span>
+              <span style="color:var(--muted);font-size:.85rem" id="editorLang">properties</span>
+            </div>
+            <textarea class="editor-area" id="editorArea" spellcheck="false"># Minecraft server properties
+server-port=25565
+gamemode=survival
+difficulty=normal
+max-players=20
+motd=\u00a7b\u00a7lGalaxy Server \u00a77- Free Hosting
+online-mode=false
+pvp=true
+enable-command-block=false
+allow-flight=false
+view-distance=10
+spawn-protection=16
+level-seed=
+level-name=world
+white-list=false</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<div id="notif"><span id="notifText">Готово!</span></div>
+
+<script src="script.js"></script>
 </body>
 </html>
