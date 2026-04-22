@@ -1,65 +1,118 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- Элементы DOM ---
+    const loginScreen = document.getElementById('login-screen');
+    const gameContainer = document.getElementById('game-container');
+    const usernameInput = document.getElementById('username-input');
+    const loginButton = document.getElementById('login-button');
+    const logoutButton = document.getElementById('logout-button');
+    
+    // Игровые элементы
     const balanceEl = document.getElementById('balance');
     const clickPowerEl = document.getElementById('click-power');
     const autoPerSecondEl = document.getElementById('auto-per-second');
     const bitcoinButton = document.getElementById('bitcoin-button');
-    const clickArea = document.getElementById('click-area');
-    const upgradesListEl = document.getElementById('upgrades-list');
-    const rebirthButton = document.getElementById('rebirth-button');
+    const clickerZone = document.querySelector('.clicker-zone');
+    
+    // Панели и вкладки
+    const tabs = document.querySelectorAll('.tab-button');
+    const panels = document.querySelectorAll('.panel');
+    const upgradesPanel = document.getElementById('upgrades-panel');
     const rebirthMultiplierEl = document.getElementById('rebirth-multiplier');
     const rebirthCostEl = document.getElementById('rebirth-cost');
+    const rebirthButton = document.getElementById('rebirth-button');
+    const leaderboardList = document.getElementById('leaderboard-list');
 
-    // --- Игровое состояние ---
-    let gameState = {
-        balance: 0.00000001,
-        clickPowerBase: 0.00000001,
-        autoClickRateBase: 0.0,
-        rebirths: 0,
-        upgradeLevels: {}
-    };
+    // --- Глобальные переменные ---
+    let currentUser = null;
+    let allUsersData = {};
+    let gameState = {};
+    let gameLoopInterval = null;
 
-    // --- Данные об улучшениях ---
+    // --- Данные игры (перебалансировано) ---
     const upgrades = [
-        { id: 'click_1', name: 'Улучшенная мышь', type: 'click', power: 0.00000001, baseCost: 0.00001, mult: 1.15 },
-        { id: 'auto_1',  name: 'Старый ноутбук',   type: 'auto',  power: 0.0000001,  baseCost: 0.0001,  mult: 1.20 },
-        { id: 'click_2', name: 'Игровая клавиатура', type: 'click', power: 0.000001,   baseCost: 0.001,   mult: 1.18 },
-        { id: 'auto_2',  name: 'Майнинг-ферма',    type: 'auto',  power: 0.00001,    baseCost: 0.01,    mult: 1.25 },
-        { id: 'click_3', name: 'Макросы', type: 'click', power: 0.00001, baseCost: 0.05, mult: 1.22},
-        { id: 'auto_3',  name: 'Квантовый компьютер', type: 'auto', power: 0.0001,   baseCost: 0.1,     mult: 1.30 },
-        { id: 'auto_4',  name: 'Дата-центр', type: 'auto', power: 0.001,   baseCost: 1.5,     mult: 1.35 }
+        { id: 'click_1', name: 'Старая мышь', type: 'click', power: 0.00000001, baseCost: 0.000001, mult: 1.2 },
+        { id: 'auto_1',  name: 'Скрипт',   type: 'auto',  power: 0.00000005,  baseCost: 0.00002,  mult: 1.25 },
+        { id: 'click_2', name: 'Игровая мышь', type: 'click', power: 0.00000010,   baseCost: 0.0001,   mult: 1.22 },
+        { id: 'auto_2',  name: 'Raspberry Pi',    type: 'auto',  power: 0.000001,    baseCost: 0.0005,    mult: 1.30 },
+        { id: 'click_3', name: 'Макросы', type: 'click', power: 0.000005, baseCost: 0.001, mult: 1.28},
+        { id: 'auto_3',  name: 'Старая видеокарта', type: 'auto', power: 0.00002,   baseCost: 0.01,     mult: 1.35 }
     ];
+    const REBIRTH_BASE_COST = 0.1;
 
-    const REBIRTH_BASE_COST = 1.0;
-
-    // --- Вспомогательные функции ---
+    // --- Функции-помощники ---
     const format = (num) => num.toFixed(8);
-    const getRebirthMultiplier = () => 1 + gameState.rebirths;
-    const getUpgradeLevel = (upgradeId) => gameState.upgradeLevels[upgradeId] || 0;
-    const getUpgradeCost = (upgrade) => upgrade.baseCost * Math.pow(upgrade.mult, getUpgradeLevel(upgrade.id));
-    const getRebirthCost = () => REBIRTH_BASE_COST * Math.pow(10, gameState.rebirths);
+    const getRebirthMultiplier = () => 1 + (gameState.rebirths || 0);
+    const getUpgradeLevel = (id) => gameState.upgradeLevels[id] || 0;
+    const getUpgradeCost = (upg) => upg.baseCost * Math.pow(upg.mult, getUpgradeLevel(upg.id));
+    const getRebirthCost = () => REBIRTH_BASE_COST * Math.pow(5, gameState.rebirths || 0);
 
-    // --- ДЕКОР: Функция для вылетающих чисел ---
-    function showFloatingNumber(amount, event) {
-        const numberEl = document.createElement('span');
-        numberEl.textContent = `+${format(amount)}`;
-        numberEl.className = 'floating-number';
-        
-        // Позиционируем число там, где был клик, со случайным смещением
-        const rect = clickArea.getBoundingClientRect();
-        const x = event.clientX - rect.left + (Math.random() * 40 - 20);
-        const y = event.clientY - rect.top + (Math.random() * 20 - 10);
-        
-        numberEl.style.left = `${x}px`;
-        numberEl.style.top = `${y}px`;
-
-        clickArea.appendChild(numberEl);
-        
-        setTimeout(() => numberEl.remove(), 1500); // Удаляем элемент после анимации
+    // --- Управление данными (аккаунты и сохранение) ---
+    function loadAllData() {
+        const data = localStorage.getItem('bitcoinClickerUsers');
+        allUsersData = data ? JSON.parse(data) : {};
     }
 
-    // --- Функции обновления ---
+    function saveGame() {
+        if (!currentUser) return;
+        allUsersData[currentUser] = gameState;
+        localStorage.setItem('bitcoinClickerUsers', JSON.stringify(allUsersData));
+    }
+
+    function login(username) {
+        if (!username) return;
+        currentUser = username;
+        
+        if (allUsersData[currentUser]) {
+            gameState = allUsersData[currentUser];
+        } else {
+            // Новый игрок
+            gameState = {
+                balance: 0.0,
+                clickPowerBase: 0.00000001,
+                autoClickRateBase: 0.0,
+                rebirths: 0,
+                upgradeLevels: {}
+            };
+        }
+        
+        loginScreen.style.display = 'none';
+        gameContainer.style.display = 'flex';
+        initializeGameUI();
+    }
+    
+    function logout() {
+        saveGame();
+        clearInterval(gameLoopInterval);
+        currentUser = null;
+        gameState = {};
+        gameContainer.style.display = 'none';
+        loginScreen.style.display = 'block';
+    }
+
+    // --- Инициализация и UI ---
+    function initializeGameUI() {
+        // Создаем HTML для улучшений
+        upgradesPanel.innerHTML = upgrades.map(u => `
+            <div class="upgrade-item">
+                <div>
+                    <p class="upgrade-title">${u.name} (ур. <span id="level-${u.id}">0</span>)</p>
+                    <p class="upgrade-stats">+${format(u.power)} ${u.type === 'click' ? 'за клик' : 'в сек.'}</p>
+                </div>
+                <button id="buy-${u.id}">Купить за <span id="cost-${u.id}">0</span></button>
+            </div>
+        `).join('');
+
+        // Привязываем события к созданным кнопкам улучшений
+        upgrades.forEach(u => {
+            document.getElementById(`buy-${u.id}`).addEventListener('click', () => buyUpgrade(u.id));
+        });
+        
+        gameLoopInterval = setInterval(gameLoop, 100);
+        updateDisplay();
+    }
+
     function updateDisplay() {
+        if (!currentUser) return;
         const multiplier = getRebirthMultiplier();
         
         balanceEl.textContent = format(gameState.balance);
@@ -69,41 +122,62 @@ document.addEventListener('DOMContentLoaded', () => {
         upgrades.forEach(upgrade => {
             const cost = getUpgradeCost(upgrade);
             const button = document.getElementById(`buy-${upgrade.id}`);
-            document.getElementById(`cost-${upgrade.id}`).textContent = format(cost);
             document.getElementById(`level-${upgrade.id}`).textContent = getUpgradeLevel(upgrade.id);
+            document.querySelector(`#cost-${upgrade.id}`).textContent = format(cost);
             
-            // ДЕКОР: Подсветка доступных кнопок
-            if (gameState.balance >= cost) {
-                button.disabled = false;
-                button.classList.add('can-afford');
-            } else {
-                button.disabled = true;
-                button.classList.remove('can-afford');
-            }
+            button.classList.toggle('can-afford', gameState.balance >= cost);
+            button.disabled = gameState.balance < cost;
         });
 
         const currentRebirthCost = getRebirthCost();
-        rebirthCostEl.textContent = format(currentRebirthCost);
         rebirthMultiplierEl.textContent = `x${multiplier}`;
-        
-        // ДЕКОР: Подсветка кнопки перерождения
-        if (gameState.balance >= currentRebirthCost) {
-            rebirthButton.disabled = false;
-            rebirthButton.classList.add('can-afford');
-        } else {
-            rebirthButton.disabled = true;
-            rebirthButton.classList.remove('can-afford');
-        }
+        rebirthCostEl.textContent = format(currentRebirthCost);
+        rebirthButton.classList.toggle('can-afford', gameState.balance >= currentRebirthCost);
+        rebirthButton.disabled = gameState.balance < currentRebirthCost;
     }
     
-    // --- Функции действий ---
-    function buyUpgrade(upgradeId) {
-        const upgrade = upgrades.find(u => u.id === upgradeId);
-        const cost = getUpgradeCost(upgrade);
+    function updateLeaderboard() {
+        const sortedUsers = Object.entries(allUsersData)
+            .map(([name, data]) => ({
+                name,
+                score: (data.rebirths || 0) * 1e9 + (data.balance || 0) // Сортируем по перерождениям, потом по балансу
+            }))
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 10); // Топ 10
 
+        leaderboardList.innerHTML = sortedUsers.map(user => `
+            <li>
+                <span>${user.name}</span>
+                <span>${allUsersData[user.name].rebirths || 0} пер. / ${format(allUsersData[user.name].balance || 0)} BTC</span>
+            </li>
+        `).join('') || '<li>Пока нет данных</li>';
+    }
+
+    // --- Игровые действия ---
+    function gameLoop() {
+        gameState.balance += gameState.autoClickRateBase * getRebirthMultiplier() / 10; // Делим для плавности
+        updateDisplay();
+    }
+    
+    function showFloatingNumber(amount, event) {
+        const numberEl = document.createElement('span');
+        numberEl.textContent = `+${format(amount)}`;
+        numberEl.className = 'floating-number';
+        
+        const rect = clickerZone.getBoundingClientRect();
+        numberEl.style.left = `${event.clientX - rect.left + (Math.random() * 30 - 15)}px`;
+        numberEl.style.top = `${event.clientY - rect.top}px`;
+        
+        clickerZone.appendChild(numberEl);
+        setTimeout(() => numberEl.remove(), 1500);
+    }
+    
+    function buyUpgrade(id) {
+        const upgrade = upgrades.find(u => u.id === id);
+        const cost = getUpgradeCost(upgrade);
         if (gameState.balance >= cost) {
             gameState.balance -= cost;
-            gameState.upgradeLevels[upgrade.id] = getUpgradeLevel(upgrade.id) + 1;
+            gameState.upgradeLevels[id] = getUpgradeLevel(id) + 1;
             if (upgrade.type === 'click') gameState.clickPowerBase += upgrade.power;
             else if (upgrade.type === 'auto') gameState.autoClickRateBase += upgrade.power;
             updateDisplay();
@@ -111,57 +185,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function performRebirth() {
-        if (gameState.balance >= getRebirthCost()) {
-            const oldRebirths = gameState.rebirths;
-            gameState = {
-                balance: 0.00000001,
-                clickPowerBase: 0.00000001,
-                autoClickRateBase: 0.0,
-                rebirths: oldRebirths + 1,
-                upgradeLevels: {}
-            };
+        const cost = getRebirthCost();
+        if (gameState.balance >= cost) {
+            gameState.balance = 0;
+            gameState.clickPowerBase = 0.00000001;
+            gameState.autoClickRateBase = 0.0;
+            gameState.upgradeLevels = {};
+            gameState.rebirths += 1;
             alert(`Поздравляем с перерождением! Ваш множитель дохода теперь x${getRebirthMultiplier()}.`);
             updateDisplay();
         }
     }
 
-    function gameLoop() {
-        const autoGain = gameState.autoClickRateBase * getRebirthMultiplier() / 10; // Делим на 10 для плавности
-        if (autoGain > 0) {
-            gameState.balance += autoGain;
-            updateDisplay();
-        }
-    }
-    
-    // --- Инициализация игры ---
-    function initialize() {
-        upgradesListEl.innerHTML = upgrades.map(u => `...`).join(''); // Сокращено для краткости, код тот же
-        upgradesListEl.innerHTML = upgrades.map(u => `
-            <div class="upgrade-item">
-                <div>
-                    <p class="upgrade-title">${u.name} (Уровень <span id="level-${u.id}">0</span>)</p>
-                    <p class="upgrade-stats">${u.type === 'click' ? 'Доход за клик' : 'Доход в сек.'}: +${format(u.power)}</p>
-                </div>
-                <button id="buy-${u.id}">
-                    Купить за <span id="cost-${u.id}">${format(u.baseCost)}</span>
-                </button>
-            </div>
-        `).join('');
-        
-        // Обработчик клика по монете
-        bitcoinButton.addEventListener('click', (event) => {
-            const clickGain = gameState.clickPowerBase * getRebirthMultiplier();
-            gameState.balance += clickGain;
-            showFloatingNumber(clickGain, event); // ДЕКОР: Показываем число
-            updateDisplay();
-        });
-        
-        rebirthButton.addEventListener('click', performRebirth);
-        upgrades.forEach(u => document.getElementById(`buy-${u.id}`).addEventListener('click', () => buyUpgrade(u.id)));
-        
-        setInterval(gameLoop, 100); // Цикл теперь срабатывает чаще для плавного начисления и обновления кнопок
-        updateDisplay();
-    }
+    // --- Привязка событий ---
+    loginButton.addEventListener('click', () => login(usernameInput.value.trim()));
+    logoutButton.addEventListener('click', logout);
+    bitcoinButton.addEventListener('click', (event) => {
+        const clickGain = gameState.clickPowerBase * getRebirthMultiplier();
+        gameState.balance += clickGain;
+        showFloatingNumber(clickGain, event);
+        updateDisplay(); // Обновляем, чтобы кнопки могли стать доступными
+    });
+    rebirthButton.addEventListener('click', performRebirth);
 
-    initialize();
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab + '-panel').classList.add('active');
+            
+            if(tab.dataset.tab === 'leaderboard') {
+                updateLeaderboard();
+            }
+        });
+    });
+
+    // --- Запуск приложения ---
+    window.addEventListener('beforeunload', saveGame); // Сохраняемся при закрытии вкладки
+    setInterval(saveGame, 5000); // Автосохранение каждые 5 секунд
+    loadAllData();
 });
