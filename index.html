@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Биткоин Кликер 2.0</title>
+    <title>Биткоин Кликер: Brawl Edition</title>
     <style>
         /* Анимации */
         @keyframes float-up { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-80px); opacity: 0; } }
-        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 10px #ff9900; } 50% { box-shadow: 0 0 25px #ffc400; } }
-        @keyframes scroll-bg { from { background-position: 0 0; } to { background-position: 0 -200px; } }
+        @keyframes modal-pop-in { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 15px #ffde00, 0 0 5px #fff; } 50% { box-shadow: 0 0 30px #ffde00, 0 0 10px #fff; } }
 
-        /* Общие стили */
+        /* Основные стили */
+        :root { --brawl-blue: #0e457f; --brawl-purple: #4c1a82; --brawl-yellow: #fde84e; --brawl-pink: #fe5591; }
+        * { box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: #0d0d0d;
-            color: #f0f0f0;
+            font-family: 'Arial Black', Gadget, sans-serif;
+            background: linear-gradient(135deg, var(--brawl-blue), var(--brawl-purple));
+            color: #fff;
             margin: 0;
             display: flex;
             justify-content: center;
@@ -22,152 +24,150 @@
             min-height: 100vh;
             user-select: none;
             overflow: hidden;
+            text-transform: uppercase;
         }
-        body::before {
-            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background-image: linear-gradient(to right, rgba(255,153,0,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,153,0,0.1) 1px, transparent 1px);
-            background-size: 40px 40px; animation: scroll-bg 10s linear infinite; z-index: -1;
-        }
-        input, button {
+
+        /* Универсальные элементы */
+        .brawl-button {
+            background: linear-gradient(to bottom, #fde84e, #fbb829);
+            color: #4c1a82;
+            border: 3px solid #fff;
+            border-radius: 15px;
+            padding: 15px 25px;
+            font-size: 1.2em;
             font-family: inherit;
-            border: none;
-            border-radius: 8px;
-            padding: 12px;
-            font-size: 1em;
-            outline: none;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
+            box-shadow: 0 5px 0 #b36b00;
+            cursor: pointer;
+            transition: all 0.1s ease-out;
+            text-transform: uppercase;
         }
-        button { cursor: pointer; background-color: #ff9900; color: #1a1a1a; font-weight: bold; transition: all 0.2s ease; }
-        button:hover:not(:disabled) { background-color: #ffb700; transform: translateY(-2px); }
-        button:disabled { background-color: #555; color: #888; cursor: not-allowed; }
+        .brawl-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 7px 0 #b36b00; }
+        .brawl-button:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 3px 0 #b36b00; }
+        .brawl-button:disabled { background: #999; box-shadow: 0 5px 0 #555; color: #ddd; cursor: not-allowed; }
+        
+        .brawl-panel {
+            background-color: var(--brawl-blue);
+            border: 4px solid var(--brawl-yellow);
+            border-radius: 20px;
+            box-shadow: 0 10px 0 rgba(0,0,0,0.2), inset 0 0 10px rgba(255,255,255,0.3);
+            padding: 30px;
+        }
 
         /* Экран входа */
         #login-screen {
-            background-color: rgba(43, 43, 43, 0.95);
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 0 25px rgba(0,0,0,0.7);
-            border: 1px solid #444;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 90%;
+            max-width: 400px;
             text-align: center;
         }
-        #login-screen h1 { color: #ff9900; margin-top: 0; }
-        #login-screen input { width: 100%; box-sizing: border-box; margin: 15px 0; background: #222; color: #fff; border: 1px solid #555; }
-        #login-screen button { width: 100%; }
+        #login-screen h1 { font-size: 2.5em; margin: 0; text-shadow: 3px 3px 0 var(--brawl-purple); }
+        #username-input {
+            padding: 15px; border-radius: 15px; border: 3px solid #fff;
+            background: rgba(0,0,0,0.2); color: #fff; font-size: 1.2em;
+            text-align: center; font-family: inherit; text-transform: uppercase;
+        }
+        #login-controls { display: flex; gap: 15px; }
+        #login-controls button { flex: 1; padding: 15px 10px; }
+        #login-error { color: var(--brawl-pink); text-shadow: 1px 1px 0 #000; font-size: 0.9em; height: 20px; }
 
-        /* Основной контейнер игры */
+        /* Игровой контейнер */
         #game-container {
             display: none; /* Скрыт по умолчанию */
-            width: 95%;
-            max-width: 500px; /* Компактный размер */
-            height: 90vh;
-            max-height: 800px;
-            background-color: rgba(43, 43, 43, 0.95);
-            border: 1px solid #444;
-            border-radius: 15px;
-            box-shadow: 0 0 25px rgba(0,0,0,0.7);
-            display: flex;
+            width: 100%; height: 100vh;
             flex-direction: column;
+            justify-content: space-between;
         }
-
-        /* Верхняя часть (кликер) */
-        .clicker-zone {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            padding: 20px;
-        }
-        .header-stats { text-align: center; }
-        .header-stats p { margin: 2px 0; color: #ccc; }
-        .header-stats #balance { font-size: 2em; color: #fff; margin: 5px 0; word-break: break-all; }
-        .coin {
-            width: 150px; height: 150px; /* Уменьшили монету */
-            background: linear-gradient(45deg, #ffc400, #ff9900);
-            border-radius: 50%;
-            border: 6px solid #b36b00;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer;
-            margin: 20px 0;
-            transition: transform 0.1s ease;
-        }
-        .coin:active { transform: scale(0.95); }
-        .coin-symbol { font-size: 70px; font-weight: bold; color: #fff; text-shadow: 1px 1px 4px #000; }
-        .floating-number { position: absolute; font-size: 1.5em; font-weight: bold; color: #ffc400; text-shadow: 0 0 5px black; pointer-events: none; animation: float-up 1.5s ease-out forwards; }
-        #logout-button { position: absolute; top: 15px; right: 15px; background: #444; color: #ccc; padding: 8px 12px; font-size: 0.8em; }
-
-        /* Нижняя часть (панель управления) */
-        .control-panel { border-top: 2px solid #444; background: #222; border-radius: 0 0 13px 13px; }
-        .tabs { display: flex; }
-        .tab-button {
-            flex: 1; background: #333; color: #aaa; border-radius: 0; padding: 15px;
-            border-bottom: 3px solid transparent;
-        }
-        .tab-button.active { background: #2b2b2b; color: #ff9900; border-bottom-color: #ff9900; }
-        .panels { padding: 20px; height: 35vh; overflow-y: auto; }
-        .panel { display: none; }
-        .panel.active { display: block; }
-
-        /* Стили для контента панелей */
-        .upgrade-item { display: flex; justify-content: space-between; align-items: center; background: #333; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
-        .upgrade-item button { width: 120px; flex-shrink: 0; }
-        .upgrade-title { font-weight: bold; } .upgrade-stats { font-size: 0.8em; color: #aaa; }
-        button.can-afford { animation: pulse-glow 2s infinite ease-in-out; }
         
-        #rebirth-panel p { margin: 10px 0; }
-        #leaderboard-list { list-style: none; padding: 0; }
-        #leaderboard-list li { background: #333; padding: 10px; border-radius: 5px; margin-bottom: 5px; display: flex; justify-content: space-between; font-size: 0.9em; }
-        #leaderboard-list li span:first-child { font-weight: bold; color: #ff9900; }
+        /* Верхняя панель */
+        .top-bar { padding: 10px 20px; text-align: center; }
+        #balance { font-size: 1.8em; text-shadow: 2px 2px 0 #000; }
+        .sub-stats { font-size: 0.8em; color: #eee; }
+        #logout-button { position: absolute; top: 15px; left: 15px; background: var(--brawl-pink); color: #fff; border: 2px solid #fff; border-radius: 10px; padding: 8px 10px; box-shadow: 0 3px 0 #a11b51; font-size: 0.8em; }
+
+        /* Центральная зона */
+        .clicker-zone { display: flex; justify-content: center; align-items: center; flex-grow: 1; position: relative; }
+        .coin { width: 180px; height: 180px; background: linear-gradient(45deg, #ffde00, #ffb829); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; border: 8px solid #fff; box-shadow: 0 10px 0 #b36b00; transition: all 0.1s ease-out; }
+        .coin:active { transform: translateY(5px); box-shadow: 0 5px 0 #b36b00; }
+        .coin-symbol { font-size: 90px; color: #b36b00; text-shadow: 2px 2px 0px rgba(255,255,255,0.7); }
+        .floating-number { position: absolute; font-size: 2em; color: var(--brawl-yellow); text-shadow: 2px 2px 0 var(--brawl-purple); pointer-events: none; animation: float-up 1.5s ease-out forwards; }
+
+        /* Нижняя навигация */
+        #bottom-nav { display: flex; justify-content: space-around; padding: 15px; background: rgba(0,0,0,0.2); }
+        #bottom-nav .brawl-button { font-size: 1em; padding: 12px 20px; }
+
+        /* Модальное окно */
+        #modal-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: none; /* Скрыто по умолчанию */
+            justify-content: center; align-items: center;
+            z-index: 100;
+        }
+        #modal-content-wrapper {
+            width: 90%; max-width: 500px;
+            animation: modal-pop-in 0.3s ease-out;
+        }
+        #modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        #modal-title { margin: 0; font-size: 2em; color: var(--brawl-yellow); text-shadow: 3px 3px 0 var(--brawl-purple); }
+        #modal-close-button { font-size: 2em; background: var(--brawl-pink); color: #fff; border: 3px solid #fff; border-radius: 50%; width: 50px; height: 50px; text-shadow: 2px 2px 0 #a11b51; box-shadow: 0 4px 0 #a11b51; }
+        #modal-body { max-height: 50vh; overflow-y: auto; padding-right: 10px; }
         
-        ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: #2b2b2b; } ::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; } ::-webkit-scrollbar-thumb:hover { background: #ff9900; }
+        /* Стили контента модалки */
+        .upgrade-item { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; margin-bottom: 10px; border: 2px solid rgba(255,255,255,0.3); }
+        .upgrade-item button { padding: 10px; font-size: 0.9em; width: 150px; flex-shrink: 0; }
+        .upgrade-title { font-weight: bold; } .upgrade-stats { font-size: 0.8em; color: #ddd; }
+        button.can-afford { animation: pulse-glow 1.5s infinite; }
+        #leaderboard-list li { background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        #leaderboard-list li span:first-child { color: var(--brawl-yellow); }
+
+        ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: var(--brawl-blue); } ::-webkit-scrollbar-thumb { background: var(--brawl-yellow); border-radius: 4px; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <h1>Биткоин Кликер</h1>
-        <p>Введите ваше имя для входа или регистрации</p>
-        <input type="text" id="username-input" placeholder="Имя игрока">
-        <button id="login-button">Войти</button>
+    <div id="login-screen" class="brawl-panel">
+        <h1>КЛИКЕР</h1>
+        <input type="text" id="username-input" placeholder="ВАШЕ ИМЯ">
+        <div id="login-controls">
+            <button id="register-button" class="brawl-button">Создать</button>
+            <button id="login-button" class="brawl-button">Войти</button>
+        </div>
+        <div id="login-error"></div>
     </div>
 
     <div id="game-container">
-        <div class="clicker-zone">
+        <div class="top-bar">
             <button id="logout-button">Выйти</button>
-            <div class="header-stats">
-                <p>Баланс:</p>
-                <h2 id="balance">0.00000000</h2>
-                <p>За клик: <span id="click-power">0.00000001</span> | В секунду: <span id="auto-per-second">0.00000000</span></p>
+            <div id="balance">0.00000000 BTC</div>
+            <div class="sub-stats">
+                Клик: <span id="click-power">0</span> | В сек: <span id="auto-per-second">0</span>
             </div>
+        </div>
+        
+        <div class="clicker-zone">
             <div id="bitcoin-button" class="coin">
                 <span class="coin-symbol">₿</span>
             </div>
         </div>
 
-        <div class="control-panel">
-            <div class="tabs">
-                <button class="tab-button active" data-tab="upgrades">Улучшения</button>
-                <button class="tab-button" data-tab="rebirth">Перерождение</button>
-                <button class="tab-button" data-tab="leaderboard">Лидерборд</button>
+        <div id="bottom-nav">
+            <button class="brawl-button" data-modal="upgrades">Улучшения</button>
+            <button class="brawl-button" data-modal="rebirth">Перерождение</button>
+            <button class="brawl-button" data-modal="leaderboard">Лидеры</button>
+        </div>
+    </div>
+
+    <div id="modal-container">
+        <div id="modal-content-wrapper" class="brawl-panel">
+            <div id="modal-header">
+                <h2 id="modal-title">Заголовок</h2>
+                <button id="modal-close-button" class="brawl-button">X</button>
             </div>
-            <div class="panels">
-                <div id="upgrades-panel" class="panel active">
-                    <!-- Улучшения будут здесь -->
-                </div>
-                <div id="rebirth-panel" class="panel">
-                    <h3>Сброс прогресса ради силы</h3>
-                    <p>Перерождение сбросит ваши BTC и улучшения, но навсегда увеличит ВЕСЬ доход.</p>
-                    <p>Текущий бонус: <span id="rebirth-multiplier">x1</span></p>
-                    <hr>
-                    <p>Стоимость: <strong id="rebirth-cost" style="color: #ffc400;">0.10000000</strong> BTC</p>
-                    <button id="rebirth-button">Переродиться</button>
-                </div>
-                <div id="leaderboard-panel" class="panel">
-                    <h3>Лучшие майнеры</h3>
-                    <ol id="leaderboard-list">
-                        <!-- Лидеры будут здесь -->
-                    </ol>
-                </div>
+            <div id="modal-body">
+                <!-- Контент загружается сюда -->
             </div>
         </div>
     </div>
