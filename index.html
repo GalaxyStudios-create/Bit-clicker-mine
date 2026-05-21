@@ -3,104 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SATURN | Minecraft Cheat 1.0</title>
+    <title>SATURN • Minecraft Cheat 1.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;600&display=swap');
-        
-        body {
-            margin: 0;
-            padding: 0;
-            background: #0a001f;
-            color: #fff;
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(0, 245, 255, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(255, 0, 170, 0.15) 0%, transparent 50%);
+        :root {
+            --accent: #e6b800;
         }
         
-        .header {
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(10px);
-            padding: 20px 0;
-            text-align: center;
-            border-bottom: 1px solid #00f5ff;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .space {
+            position: fixed;
+            inset: 0;
+            z-index: -4;
+            background: 
+                radial-gradient(circle at 25% 30%, rgba(255,255,255,0.09) 1px, transparent 2px),
+                radial-gradient(circle at 60% 70%, rgba(255,255,255,0.06) 1px, transparent 2px),
+                #0a0a0a;
+            background-size: 190px 190px;
+            animation: stars 220s linear infinite;
+        }
+        
+        @keyframes stars { from { background-position: 0 0; } to { background-position: 600px 600px; } }
+        
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            padding: 25px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10,10,10,0.95);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+            border-bottom: 1px solid #333;
         }
         
         .logo {
             font-family: 'Orbitron', sans-serif;
-            font-size: 3.5rem;
-            background: linear-gradient(90deg, #00f5ff, #ff00aa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 3.2rem;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 3px;
         }
         
         .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            padding: 120px 20px 80px;
+            position: relative;
         }
         
-        h1 {
+        .hero-content h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 4.5rem;
-            margin: 20px 0;
+            font-size: 7.4rem;
+            font-weight: 900;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 50px #ffffff;
+        }
+        
+        .version {
+            color: #bbbbbb;
+            border: 2px solid #555;
+            padding: 12px 40px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 30px;
+            font-size: 1.35rem;
+        }
+        
+        /* Большой Сатурн */
+        .saturn {
+            position: absolute;
+            right: 8%;
+            top: 15%;
+            width: 520px;
+            border-radius: 50%;
+            box-shadow: 0 0 90px #ffffff, 0 0 160px rgba(230, 184, 0, 0.3);
+            animation: float 32s ease-in-out infinite;
+            z-index: -2;
+        }
+        
+        /* Луна */
+        .moon {
+            position: absolute;
+            left: 10%;
+            top: 25%;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle at 40% 40%, #f0f0f0, #aaaaaa 70%, #666);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 60px #ffffff,
+                inset 30px 30px 40px rgba(255,255,255,0.4),
+                inset -25px -25px 40px rgba(0,0,0,0.6);
+            animation: moon-float 45s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(2deg); }
+            50% { transform: translateY(-45px) rotate(-3deg); }
+        }
+        
+        @keyframes moon-float {
+            0%, 100% { transform: translateY(0) rotate(5deg); }
+            50% { transform: translateY(-30px) rotate(-5deg); }
         }
         
         .download-btn {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 20px 60px;
-            font-size: 1.6rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, #00f5ff, #ff00aa);
-            color: black;
-            border-radius: 50px;
+            margin-top: 50px;
+            padding: 28px 110px;
+            font-size: 2rem;
+            font-weight: 700;
+            background: #ffffff;
+            color: #000000;
+            border-radius: 60px;
             text-decoration: none;
-            box-shadow: 0 0 40px #00f5ff;
-            transition: 0.3s;
+            box-shadow: 0 0 40px rgba(255,255,255,0.6);
+            transition: all 0.4s;
         }
         
         .download-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 70px #ff00aa;
+            transform: translateY(-12px) scale(1.08);
+            box-shadow: 0 0 70px #ffcc00;
         }
         
-        .container {
-            max-width: 1000px;
+        section { padding: 140px 8% 100px; }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 30px;
+            max-width: 1300px;
             margin: 0 auto;
-            padding: 0 20px;
         }
         
-        footer {
-            text-align: center;
-            padding: 50px 0;
-            opacity: 0.6;
+        .card {
+            background: #111111;
+            border: 1px solid #444444;
+            border-radius: 20px;
+            padding: 40px;
+            transition: all 0.4s;
+        }
+        
+        .card:hover {
+            border-color: #aaaaaa;
+            box-shadow: 0 0 35px rgba(255, 204, 0, 0.2);
+            transform: translateY(-15px);
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">SATURN</div>
-    </div>
+    <div class="space"></div>
     
-    <div class="hero">
-        <div class="container">
-            <h1>SATURN 1.0</h1>
-            <p style="font-size: 1.5rem; margin: 20px 0;">Космический чит для Minecraft</p>
-            <p style="font-size: 1.3rem; opacity: 0.9;">Поддержка 1.8 — 1.21 • Красивое меню • Undetected</p>
+    <header>
+        <div class="logo">SATURN</div>
+    </header>
+    
+    <section class="hero">
+        <div class="hero-content">
+            <div class="version">VERSION 1.0</div>
+            <h1>SATURN</h1>
+            <p style="font-size: 2.3rem; opacity: 0.85; margin-bottom: 40px;">Космический чит для Minecraft</p>
             
             <a href="Saturn.rar" download="Saturn_1.0.rar" class="download-btn">
-                ⬇️ СКАЧАТЬ SATURN 1.0
+                ⬇️ СКАЧАТЬ 1.0
             </a>
-            
-            <p style="margin-top: 40px; font-size: 1.1rem;">
-                Saturn.rar • 114 МБ
-            </p>
         </div>
-    </div>
+        
+        <!-- Сатурн -->
+        <img src="https://images.unsplash.com/photo-1614730321146-b6fa6a42b7df?w=800" class="saturn" alt="Saturn">
+        
+        <!-- Луна -->
+        <div class="moon"></div>
+    </section>
     
-    <footer>
-        <p>Сделано в стиле космоса 🌌 | Saturn Cheat 2026</p>
+    <section>
+        <h2 style="text-align:center; font-size:3.4rem; margin-bottom:70px; color:#ffffff; font-family:Orbitron;">Возможности</h2>
+        <div class="features">
+            <div class="card">
+                <h3 style="color:#dddddd; font-size:1.8rem;">🌌 VISUALS</h3>
+                <ul style="margin-top:25px; line-height:2.4; font-size:1.15rem;">
+                    <li>ESP • Nametags • Tracers</li>
+                    <li>X-Ray • Fullbright</li>
+                    <li>Item ESP</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3 style="color:#dddddd; font-size:1.8rem;">⚔️ COMBAT</h3>
+                <ul style="margin-top:25px; line-height:2.4; font-size:1.15rem;">
+                    <li>Aimbot • TriggerBot</li>
+                    <li>Reach • Criticals</li>
+                    <li>Velocity • AutoTotem</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3 style="color:#dddddd; font-size:1.8rem;">🚀 MOVEMENT</h3>
+                <ul style="margin-top:25px; line-height:2.4; font-size:1.15rem;">
+                    <li>Flight • Speed</li>
+                    <li>NoFall • LongJump</li>
+                    <li>Scaffold • Spider</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    <footer style="text-align:center; padding:80px; background:#050505; color:#777;">
+        SATURN CHEAT 2026
     </footer>
 </body>
 </html>
