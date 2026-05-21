@@ -52,7 +52,6 @@
             font-size: 3.2rem;
             font-weight: 900;
             color: #ffffff;
-            letter-spacing: 3px;
         }
         
         .hero {
@@ -70,7 +69,6 @@
             font-weight: 900;
             color: #ffffff;
             margin-bottom: 20px;
-            text-shadow: 0 0 50px #ffffff;
         }
         
         .version {
@@ -83,7 +81,6 @@
             font-size: 1.35rem;
         }
         
-        /* Большой Сатурн */
         .saturn {
             position: absolute;
             right: 8%;
@@ -95,32 +92,21 @@
             z-index: -2;
         }
         
-        /* Луна */
         .moon {
             position: absolute;
             left: 10%;
-            top: 25%;
-            width: 180px;
-            height: 180px;
+            top: 28%;
+            width: 170px;
+            height: 170px;
             background: radial-gradient(circle at 40% 40%, #f0f0f0, #aaaaaa 70%, #666);
             border-radius: 50%;
-            box-shadow: 
-                0 0 60px #ffffff,
-                inset 30px 30px 40px rgba(255,255,255,0.4),
-                inset -25px -25px 40px rgba(0,0,0,0.6);
+            box-shadow: 0 0 60px #ffffff, inset 25px 25px 35px rgba(255,255,255,0.3);
             animation: moon-float 45s ease-in-out infinite;
             z-index: -1;
         }
         
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(2deg); }
-            50% { transform: translateY(-45px) rotate(-3deg); }
-        }
-        
-        @keyframes moon-float {
-            0%, 100% { transform: translateY(0) rotate(5deg); }
-            50% { transform: translateY(-30px) rotate(-5deg); }
-        }
+        @keyframes float { 0%,100% { transform: translateY(0) rotate(2deg); } 50% { transform: translateY(-45px) rotate(-3deg); } }
+        @keyframes moon-float { 0%,100% { transform: translateY(0) rotate(5deg); } 50% { transform: translateY(-25px) rotate(-5deg); } }
         
         .download-btn {
             margin-top: 50px;
@@ -139,30 +125,6 @@
             transform: translateY(-12px) scale(1.08);
             box-shadow: 0 0 70px #ffcc00;
         }
-        
-        section { padding: 140px 8% 100px; }
-        
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-            gap: 30px;
-            max-width: 1300px;
-            margin: 0 auto;
-        }
-        
-        .card {
-            background: #111111;
-            border: 1px solid #444444;
-            border-radius: 20px;
-            padding: 40px;
-            transition: all 0.4s;
-        }
-        
-        .card:hover {
-            border-color: #aaaaaa;
-            box-shadow: 0 0 35px rgba(255, 204, 0, 0.2);
-            transform: translateY(-15px);
-        }
     </style>
 </head>
 <body>
@@ -178,43 +140,42 @@
             <h1>SATURN</h1>
             <p style="font-size: 2.3rem; opacity: 0.85; margin-bottom: 40px;">Космический чит для Minecraft</p>
             
-            <a href="Saturn.rar" download="Saturn_1.0.rar" class="download-btn">
-                ⬇️ СКАЧАТЬ 1.0
+            <!-- Кнопка теперь ведёт в Telegram -->
+            <a href="https://t.me/ClientSaturn" target="_blank" class="download-btn">
+                ⬇️ СКАЧАТЬ SATURN 1.0
             </a>
+            
+            <p style="margin-top: 30px; font-size: 1.2rem; opacity: 0.7;">
+                Переход в Telegram-канал для скачивания
+            </p>
         </div>
         
-        <!-- Сатурн -->
         <img src="https://images.unsplash.com/photo-1614730321146-b6fa6a42b7df?w=800" class="saturn" alt="Saturn">
-        
-        <!-- Луна -->
         <div class="moon"></div>
     </section>
     
     <section>
         <h2 style="text-align:center; font-size:3.4rem; margin-bottom:70px; color:#ffffff; font-family:Orbitron;">Возможности</h2>
-        <div class="features">
-            <div class="card">
-                <h3 style="color:#dddddd; font-size:1.8rem;">🌌 VISUALS</h3>
-                <ul style="margin-top:25px; line-height:2.4; font-size:1.15rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 30px; max-width: 1300px; margin: 0 auto;">
+            <div style="background:#111; border:1px solid #444; border-radius:20px; padding:40px;">
+                <h3 style="color:#ddd; font-size:1.8rem;">🌌 VISUALS</h3>
+                <ul style="margin-top:25px; line-height:2.4;">
                     <li>ESP • Nametags • Tracers</li>
                     <li>X-Ray • Fullbright</li>
-                    <li>Item ESP</li>
                 </ul>
             </div>
-            <div class="card">
-                <h3 style="color:#dddddd; font-size:1.8rem;">⚔️ COMBAT</h3>
-                <ul style="margin-top:25px; line-height:2.4; font-size:1.15rem;">
+            <div style="background:#111; border:1px solid #444; border-radius:20px; padding:40px;">
+                <h3 style="color:#ddd; font-size:1.8rem;">⚔️ COMBAT</h3>
+                <ul style="margin-top:25px; line-height:2.4;">
                     <li>Aimbot • TriggerBot</li>
                     <li>Reach • Criticals</li>
-                    <li>Velocity • AutoTotem</li>
                 </ul>
             </div>
-            <div class="card">
-                <h3 style="color:#dddddd; font-size:1.8rem;">🚀 MOVEMENT</h3>
-                <ul style="margin-top:25px; line-height:2.4; font-size:1.15rem;">
+            <div style="background:#111; border:1px solid #444; border-radius:20px; padding:40px;">
+                <h3 style="color:#ddd; font-size:1.8rem;">🚀 MOVEMENT</h3>
+                <ul style="margin-top:25px; line-height:2.4;">
                     <li>Flight • Speed</li>
                     <li>NoFall • LongJump</li>
-                    <li>Scaffold • Spider</li>
                 </ul>
             </div>
         </div>
