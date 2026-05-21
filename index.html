@@ -3,141 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Биткоин Кликер: Brawl Edition</title>
+    <title>SATURN | Minecraft Cheat 1.0</title>
     <style>
-        /* Анимации */
-        @keyframes float-up { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-80px); opacity: 0; } }
-        @keyframes modal-pop-in { from { transform: scale(0.8) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 10px #ffde00; } 50% { box-shadow: 0 0 20px #ffde00; } }
-
-        /* Основные стили */
-        :root { --brawl-blue: #0e457f; --brawl-purple: #4c1a82; --brawl-yellow: #fde84e; --brawl-pink: #fe5591; }
-        * { box-sizing: border-box; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;600&display=swap');
+        
         body {
-            font-family: 'Arial Black', Gadget, sans-serif;
-            background: linear-gradient(135deg, var(--brawl-blue), var(--brawl-purple));
-            color: #fff;
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 0;
+            background: #0a001f;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
-            user-select: none;
-            overflow: hidden;
-            text-transform: uppercase;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(0, 245, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 0, 170, 0.15) 0%, transparent 50%);
         }
-
-        /* Универсальные элементы */
-        .brawl-button {
-            background: linear-gradient(to bottom, var(--brawl-yellow), #fbb829);
-            color: #4c1a82;
-            border: 2px solid #fff;
-            border-bottom: 5px solid #fff;
-            border-radius: 15px;
-            padding: 15px 25px;
-            font-size: 1.2em;
-            font-family: inherit;
-            text-shadow: 1px 1px 0px rgba(255,255,255,0.4);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            cursor: pointer;
-            transition: all 0.1s ease-out;
-            text-transform: uppercase;
+        
+        .header {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 1px solid #00f5ff;
         }
-        .brawl-button:hover:not(:disabled) { filter: brightness(1.1); }
-        .brawl-button:active:not(:disabled) { transform: translateY(3px); border-bottom-width: 2px; }
-        .brawl-button:disabled { background: #999; border-color: #ccc; color: #ddd; cursor: not-allowed; }
         
-        .brawl-panel {
-            background-color: var(--brawl-blue);
-            border: 3px solid var(--brawl-yellow);
-            border-radius: 20px;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.2), inset 0 0 5px rgba(255,255,255,0.2);
-            padding: 30px;
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            background: linear-gradient(90deg, #00f5ff, #ff00aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-
-        /* Экран входа */
-        #login-screen { display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 400px; text-align: center; }
-        #login-screen h1 { font-size: 2.5em; margin: 0; text-shadow: 3px 3px 0 var(--brawl-purple); }
-        .input-field { padding: 15px; border-radius: 15px; border: 3px solid #fff; background: rgba(0,0,0,0.2); color: #fff; font-size: 1.1em; text-align: center; font-family: inherit; text-transform: uppercase; }
-        #login-controls { display: flex; gap: 15px; margin-top: 10px; }
-        #login-controls button { flex: 1; padding: 15px 10px; }
-        #login-error { color: var(--brawl-pink); text-shadow: 1px 1px 0 #000; font-size: 0.9em; height: 20px; font-weight: bold; }
-
-        /* Игровой контейнер */
-        #game-container { display: none; width: 100%; height: 100vh; flex-direction: column; justify-content: space-between; }
-        .top-bar { padding: 10px 20px; text-align: center; position: relative; }
-        #balance { font-size: 1.8em; text-shadow: 2px 2px 0 rgba(0,0,0,0.3); }
-        .sub-stats { font-size: 0.8em; color: #eee; text-shadow: 1px 1px 0 rgba(0,0,0,0.3); }
-        #logout-button { position: absolute; top: 15px; left: 15px; background: var(--brawl-pink); color: #fff; border-radius: 10px; padding: 8px 10px; font-size: 0.8em; }
-        .clicker-zone { display: flex; justify-content: center; align-items: center; flex-grow: 1; position: relative; }
-        .coin { width: 180px; height: 180px; background: linear-gradient(45deg, #ffde00, #ffb829); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; border: 8px solid #fff; box-shadow: 0 5px 10px rgba(0,0,0,0.3); transition: all 0.1s ease-out; }
-        .coin:active { transform: translateY(3px); box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-        .coin-symbol { font-size: 90px; color: #b36b00; text-shadow: 2px 2px 0px rgba(255,255,255,0.7); }
-        .floating-number { position: absolute; font-size: 2em; color: var(--brawl-yellow); text-shadow: 2px 2px 0 var(--brawl-purple); pointer-events: none; animation: float-up 1.5s ease-out forwards; }
-        #bottom-nav { display: flex; justify-content: space-around; padding: 15px; background: rgba(0,0,0,0.2); }
-        #bottom-nav .brawl-button { font-size: 1em; padding: 12px 20px; }
         
-        #modal-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(3px); }
-        #modal-content-wrapper { width: 90%; max-width: 500px; animation: modal-pop-in 0.3s ease-out; }
-        #modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        #modal-title { margin: 0; font-size: 2em; color: var(--brawl-yellow); text-shadow: 3px 3px 0 var(--brawl-purple); }
-        #modal-close-button { font-size: 2em; background: var(--brawl-pink); color: #fff; border: 3px solid #fff; border-radius: 50%; width: 50px; height: 50px; text-shadow: 2px 2px 0 #a11b51; }
-        #modal-body { max-height: 50vh; overflow-y: auto; padding-right: 10px; }
+        .hero {
+            text-align: center;
+            padding: 120px 20px 80px;
+        }
         
-        .upgrade-item { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; margin-bottom: 10px; border: 2px solid rgba(255,255,255,0.3); }
-        .upgrade-item button { padding: 10px; font-size: 0.9em; width: 150px; flex-shrink: 0; }
-        .upgrade-title { font-weight: bold; } .upgrade-stats { font-size: 0.8em; color: #ddd; }
-        button.can-afford { animation: pulse-glow 1.5s infinite; }
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4.5rem;
+            margin: 20px 0;
+        }
         
-        #friend-id-container { text-align: center; }
-        #friend-id-display { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; font-size: 1.5em; color: var(--brawl-yellow); margin-bottom: 20px; }
+        .download-btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 20px 60px;
+            font-size: 1.6rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00f5ff, #ff00aa);
+            color: black;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 0 40px #00f5ff;
+            transition: 0.3s;
+        }
         
-        ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: var(--brawl-blue); } ::-webkit-scrollbar-thumb { background: var(--brawl-yellow); border-radius: 4px; }
+        .download-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 70px #ff00aa;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 50px 0;
+            opacity: 0.6;
+        }
     </style>
 </head>
 <body>
-
-    <div id="login-screen" class="brawl-panel">
-        <h1>КЛИКЕР</h1>
-        <input type="text" id="username-input" class="input-field" placeholder="ВАШЕ ИМЯ">
-        <input type="password" id="password-input" class="input-field" placeholder="ПАРОЛЬ">
-        <input type="password" id="confirm-password-input" class="input-field" placeholder="ПОДТВЕРДИТЕ ПАРОЛЬ">
-        <div id="login-controls">
-            <button id="register-button" class="brawl-button">Создать</button>
-            <button id="login-button" class="brawl-button">Войти</button>
-        </div>
-        <div id="login-error"></div>
+    <div class="header">
+        <div class="logo">SATURN</div>
     </div>
-
-    <div id="game-container">
-        <div class="top-bar">
-            <button id="logout-button" class="brawl-button">Выйти</button>
-            <div id="balance">0.00000000 BTC</div>
-            <div class="sub-stats">
-                Клик: <span id="click-power">0</span> | В сек: <span id="auto-per-second">0</span>
-            </div>
-        </div>
-        
-        <div class="clicker-zone"><div id="bitcoin-button" class="coin"><span class="coin-symbol">₿</span></div></div>
-
-        <div id="bottom-nav">
-            <button class="brawl-button" data-modal="Улучшения">Улучшения</button>
-            <button class="brawl-button" data-modal="Друзья">Друзья</button>
-            <button class="brawl-button" data-modal="Лидеры">Лидеры</button>
-            <button class="brawl-button" data-modal="Перерождение" style="background: var(--brawl-pink); color: #fff;">Перерождение</button>
+    
+    <div class="hero">
+        <div class="container">
+            <h1>SATURN 1.0</h1>
+            <p style="font-size: 1.5rem; margin: 20px 0;">Космический чит для Minecraft</p>
+            <p style="font-size: 1.3rem; opacity: 0.9;">Поддержка 1.8 — 1.21 • Красивое меню • Undetected</p>
+            
+            <a href="Saturn.rar" download="Saturn_1.0.rar" class="download-btn">
+                ⬇️ СКАЧАТЬ SATURN 1.0
+            </a>
+            
+            <p style="margin-top: 40px; font-size: 1.1rem;">
+                Saturn.rar • 114 МБ
+            </p>
         </div>
     </div>
-
-    <div id="modal-container">
-        <div id="modal-content-wrapper" class="brawl-panel">
-            <div id="modal-header">
-                <h2 id="modal-title">Заголовок</h2>
-                <button id="modal-close-button" class="brawl-button">X</button>
-            </div>
-            <div id="modal-body"></div>
-        </div>
-    </div>
-
-    <script src="script.js" defer></script>
+    
+    <footer>
+        <p>Сделано в стиле космоса 🌌 | Saturn Cheat 2026</p>
+    </footer>
 </body>
 </html>
